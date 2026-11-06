@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { GiHamburgerMenu } from "react-icons/gi";
+import Link from "next/link"
+import { Briefcase, Building2, Tag } from "lucide-react"
+import { GiHamburgerMenu } from "react-icons/gi"
+
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Sheet,
   SheetClose,
@@ -12,30 +13,83 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
+
+const navLinks = [
+  { label: "Browse Jobs", href: "/jobs", icon: Briefcase },
+  { label: "Company", href: "/company", icon: Building2 },
+  { label: "Pricing", href: "/pricing", icon: Tag },
+]
 
 export function MobileMenu() {
   return (
     <Sheet>
-      <SheetTrigger render={
-        <button><GiHamburgerMenu /></button>
-        } />
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
+      <SheetTrigger render={<Button variant="ghost" size="icon" />}>
+        <GiHamburgerMenu className="size-5" />
+        <span className="sr-only">Open menu</span>
+      </SheetTrigger>
+
+      <SheetContent className="gap-0 p-0">
+        <SheetHeader className="gap-1 border-b p-5 pr-12">
+          <SheetTitle className="text-lg font-bold tracking-tight">
+            hire<span className="text-indigo-600">loop</span>
+          </SheetTitle>
           <SheetDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
+            Browse jobs, explore companies, and manage your account.
           </SheetDescription>
         </SheetHeader>
-        <div className="grid flex-1 auto-rows-min gap-6 px-4">
-            <ol>
-                <li>Browse Jobs</li>
-                <li>Company</li>
-                <li>Pricing</li>
-            </ol>
-        </div>
-        <SheetFooter>
-          <Button >Sign In</Button>
-          <SheetClose render={<Button variant="outline">Close</Button>} />
+
+        <nav aria-label="Main" className="flex-1 overflow-y-auto p-3">
+          <ul className="flex flex-col gap-1">
+            {navLinks.map(({ label, href, icon: Icon }) => (
+              <li key={href}>
+                <SheetClose
+                  nativeButton={false}
+                  render={
+                    <Link
+                      href={href}
+                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    />
+                  }
+                >
+                  <Icon className="size-4 shrink-0" />
+                  {label}
+                </SheetClose>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <SheetFooter className="gap-2 border-t p-4">
+          <SheetClose
+            nativeButton={false}
+            render={
+              <Link
+                href="/sign-in"
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "h-10 w-full"
+                )}
+              />
+            }
+          >
+            Sign In
+          </SheetClose>
+
+          <SheetClose
+            nativeButton={false}
+            render={
+              <Link
+                href="/register"
+                className={cn(
+                  buttonVariants(),
+                  "h-10 w-full bg-indigo-600 text-white hover:bg-indigo-500"
+                )}
+              />
+            }
+          >
+            Get Started
+          </SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>
