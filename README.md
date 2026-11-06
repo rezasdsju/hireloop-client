@@ -4,7 +4,9 @@ HireLoop is a web application where users can search for jobs, and recruiters or
 
 This repository contains the frontend of the application.
 
+## Live Demo
 
+[https://hireloop-jobs-board.vercel.app](https://hireloop-jobs-board.vercel.app)
 
 ## Technologies
 
