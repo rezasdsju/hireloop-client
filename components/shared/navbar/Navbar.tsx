@@ -1,40 +1,81 @@
+import Image from "next/image"
+import Link from "next/link"
 
-import logo from '@/app/images/logo.png'
-import Image from 'next/image';
+import logo from "@/app/images/logo.png"
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
-import { MobileMenu } from './MobileMenu';
-import ThemeToggle from './ThemeToggle';
+import { MobileMenu } from "./MobileMenu"
+import ThemeToggle from "./ThemeToggle"
+
+const navLinks = [
+  { label: "Browse Jobs", href: "/jobs" },
+  { label: "Company", href: "/company" },
+  { label: "Pricing", href: "/pricing" },
+]
 
 const Navbar = () => {
-    return (
-        <nav className='sticky top-0 z-50 py-5 my-3 border border-border rounded-2xl mx-5 bg-background text-foreground'>
-            <div className='flex items-center justify-between px-5'>
-                <div>
-                    <Image src={logo} alt='hireloop' width={100} height={50}></Image>
-                </div>
+  return (
+    <header className="sticky top-0 z-50 px-4 py-3">
+      <nav
+        aria-label="Main"
+        className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-8 rounded-2xl border border-border bg-card/95 px-5 shadow-sm backdrop-blur-md"
+      >
+        <Link href="/" className="flex shrink-0 items-center">
+          <Image
+            src={logo}
+            alt="hireloop"
+            width={154}
+            height={44}
+            priority
+            className="h-9 w-auto"
+          />
+        </Link>
 
-                <div className='hidden md:flex items-center justify-end gap-5'>
-                    <ol className='flex items-center justify-center gap-5'>
-                        <li>Browse Jobs</li>
-                        <li>Company</li>
-                        <li>Pricing</li>
-                    </ol>
-                    <span className='h-6 w-px bg-foreground/20'></span>
-                    <span>< ThemeToggle/></span>
-                    <span className='h-6 w-px bg-foreground/20'></span>
-                    <div className='flex items-center justify-center gap-5'>
-                        <button className='text-indigo-600'>Sign In</button>
-                        <button className='bg-indigo-600 rounded-md px-4 py-2'>Get Started</button>
-                    </div>
-                </div>
+        <div className="flex items-center gap-6">
+          <ul className="hidden items-center gap-8 md:flex">
+            {navLinks.map(({ label, href }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-                <div className='flex md:hidden'>
-                    <MobileMenu/>
-                </div>
+          <span className="hidden h-5 w-px bg-border md:block" />
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+
+            <Link
+              href="/sign-in"
+              className="hidden text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 md:inline dark:text-indigo-400 dark:hover:text-indigo-300"
+            >
+              Sign In
+            </Link>
+
+            <Link
+              href="/register"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "hidden h-10 rounded-lg bg-indigo-600 px-5 text-white hover:bg-indigo-500 md:inline-flex"
+              )}
+            >
+              Get Started
+            </Link>
+
+            <div className="md:hidden">
+              <MobileMenu />
             </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  )
+}
 
-        </nav>
-    );
-};
-
-export default Navbar;
+export default Navbar

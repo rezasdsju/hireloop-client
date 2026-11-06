@@ -8,6 +8,7 @@ const ThemeToggle = () => {
         <Button
             variant={`ghost`}
             size={`icon`}
+            aria-label="Toggle theme"
             onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
         >
             < GoMoon className="size-5 dark:hidden" />
