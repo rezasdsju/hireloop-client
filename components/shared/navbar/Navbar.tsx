@@ -1,8 +1,9 @@
 
 import logo from '@/app/images/logo.png'
 import Image from 'next/image';
-import { GiHamburgerMenu } from "react-icons/gi";
+
 import { MobileMenu } from './MobileMenu';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
     return (
@@ -18,6 +19,8 @@ const Navbar = () => {
                         <li>Company</li>
                         <li>Pricing</li>
                     </ol>
+                    <span className='h-6 w-px bg-foreground/20'></span>
+                    <span>< ThemeToggle/></span>
                     <span className='h-6 w-px bg-foreground/20'></span>
                     <div className='flex items-center justify-center gap-5'>
                         <button className='text-indigo-600'>Sign In</button>
