@@ -8,11 +8,16 @@ This repository contains the frontend of the application.
 
 [https://hireloop-jobs-board.vercel.app](https://hireloop-jobs-board.vercel.app)
 
+
 ## Technologies
 
 - Next.js
+- React
+- TypeScript
 - Tailwind CSS
 - shadcn/ui
+- React Icons
+- next-themes
 - Better Auth
 - JWT Authorization
 - MongoDB
