@@ -1,21 +1,5 @@
-# Next.js template
+# HireLoop - A Job Portal
 
-This is a Next.js template with shadcn/ui.
+HireLoop is a web application where users can search for jobs, and recruiters or companies can post hiring opportunities. All job posts are reviewed and controlled by an admin.
 
-## Adding components
-
-To add components to your app, run the following command:
-
-```bash
-npx shadcn@latest add button
-```
-
-This will place the ui components in the `components` directory.
-
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+This repository contains the frontend of the application.
