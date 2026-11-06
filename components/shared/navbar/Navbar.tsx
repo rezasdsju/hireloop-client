@@ -16,7 +16,7 @@ const navLinks = [
 
 const Navbar = () => {
   return (
-    <header className="sticky top-0 z-50 px-4 py-3">
+    <header className="sticky -top-3 z-50 bg-background px-4 pt-3">
       <nav
         aria-label="Main"
         className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-8 rounded-2xl border border-border bg-card/95 px-5 shadow-sm backdrop-blur-md"
