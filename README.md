@@ -13,8 +13,9 @@ This repository contains the frontend of the application.
 
 - Responsive navbar with mobile menu
 - Light and dark theme toggle
-- User registration with email and password
-
+- User registration and sign in with email and password
+- User roles: job seeker, recruiter and admin
+- Profile menu with sign out
 
 ## Technologies
 
