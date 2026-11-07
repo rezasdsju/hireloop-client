@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils"
 import { MobileMenu } from "./MobileMenu"
 import ThemeToggle from "./ThemeToggle"
 import { authClient } from "@/lib/auth-client"
-import UserAvatar from "./UserAvatar"
 import { SkeletonAvatar } from "./SkeletonAvatar"
+import { ProfileMenu } from "./ProfileMenu"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -55,39 +55,52 @@ const Navbar = () => {
 
           <span className="hidden h-5 w-px bg-border md:block" />
 
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            {
-              isPending ? <SkeletonAvatar /> :
-                user ? <div className="flex items-center gap-2">
-                  <UserAvatar user={user} />
-                  <button className="hidden min-[400px]:flex">Sign Out</button>
-                </div> :
-                  <div className="flex items-center gap-2">
-                    <Link
-                      href="/sign-in"
-                      className="hidden text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 md:inline dark:text-indigo-400 dark:hover:text-indigo-300"
-                    >
-                      Sign In
-                    </Link>
-
-                    <Link
-                      href="/register"
-                      className={cn(
-                        buttonVariants({ size: "lg" }),
-                        "hidden h-10 rounded-lg bg-indigo-600 px-5 text-white hover:bg-indigo-500 md:inline-flex"
-                      )}
-                    >
-                      Get Started
-                    </Link>
-                  </div>
-
-            }
-
-
-            <div className="md:hidden">
-              <MobileMenu />
+          <div className="flex items-center gap-5">
+            <div>
+              <ThemeToggle />
             </div>
+            <div>
+              {
+                isPending ? <SkeletonAvatar /> :
+                  user ?
+                    <div className="flex items-center  gap-8">
+                      <span><ProfileMenu user={user} /></span>
+                      <button className="hidden h-9 items-center justify-center rounded-lg border border-border px-3.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none min-[500px]:flex cursor-pointer">
+                        Sign Out
+                      </button>
+                    </div> :
+                    <div >
+                      <div className="hidden md:flex">
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href="/sign-in"
+                            className="hidden text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 md:inline dark:text-indigo-400 dark:hover:text-indigo-300 cursor-pointer"
+                          >
+                            Sign In
+                          </Link>
+
+                          <Link
+                            href="/register"
+                            className={cn(
+                              buttonVariants({ size: "lg" }),
+                              "hidden h-10 rounded-lg bg-indigo-600 px-5 text-white hover:bg-indigo-500 md:inline-flex ccursor-pointer"
+                            )}
+                          >
+                            Get Started
+                          </Link>
+                        </div>
+                      </div>
+                      <div className="flex md:hidden">
+                        <MobileMenu />
+                      </div>
+                    </div>
+
+
+              }
+            </div>
+
+
+
           </div>
         </div>
       </nav>
