@@ -17,7 +17,7 @@ const RegisterForm = () => {
     const router = useRouter()
     const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
-        let isRegistered = true
+        setIsRegistered(true)
         const formData = new FormData(e.currentTarget)
         const userData = Object.fromEntries(formData.entries())
         const { data, error } = await authClient.signUp.email({
@@ -41,7 +41,7 @@ const RegisterForm = () => {
                 priority: 'high'
             })
             setIsRegistered(true)
-            router.replace('/')
+            setTimeout(()=>router.replace('/'),1500)
         }
 
     }
@@ -115,7 +115,7 @@ const RegisterForm = () => {
 
                 <Button
                     disabled={isRegistered}
-                    type="button"
+                    type="submit"
                     className="h-10 w-full bg-indigo-600 text-white hover:bg-indigo-500"
                 >
                     Create account
