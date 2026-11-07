@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Briefcase, Building2, Tag } from "lucide-react"
-import { GiHamburgerMenu } from "react-icons/gi"
+
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils"
 import { IUser } from "@/types/userTypes"
 import UserAvatar from "./UserAvatar"
 import { useState } from "react"
+import useSignOut from "@/hooks/use-sign-out"
 
 const navLinks = [
     { label: "Browse Jobs", href: "/jobs", icon: Briefcase },
@@ -26,13 +27,15 @@ const navLinks = [
 
 export function ProfileMenu({ user }: { user: IUser }) {
     const [open, setOpen] = useState(false)
+
+    const { handleSignOut, isSignedOut } = useSignOut()
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger render={
                 <Button variant="ghost" size="icon" />
 
             }>
-                <UserAvatar user={user} isOpen = {open}/>
+                <UserAvatar user={user} isOpen={open} />
             </SheetTrigger>
 
             <SheetContent className="gap-0 p-0">
@@ -77,9 +80,13 @@ export function ProfileMenu({ user }: { user: IUser }) {
                                     "h-10 w-full cursor-pointer"
                                 )}
                             />
-                        }
-                    >
-                        Sign Out
+                        }>
+                        <button
+                            disabled={isSignedOut}
+                            onClick={handleSignOut}
+                        >
+                            Sign Out
+                        </button >
                     </SheetClose>
                 </SheetFooter>
             </SheetContent>

@@ -11,6 +11,7 @@ import ThemeToggle from "./ThemeToggle"
 import { authClient } from "@/lib/auth-client"
 import { SkeletonAvatar } from "./SkeletonAvatar"
 import { ProfileMenu } from "./ProfileMenu"
+import useSignOut from "@/hooks/use-sign-out"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -19,7 +20,7 @@ const navLinks = [
 ]
 
 const Navbar = () => {
-
+  const { handleSignOut, isSignedOut } = useSignOut()
   const { data: session, isPending } = authClient.useSession()
   const user = session?.user
   return (
@@ -65,7 +66,10 @@ const Navbar = () => {
                   user ?
                     <div className="flex items-center  gap-8">
                       <span><ProfileMenu user={user} /></span>
-                      <button className="hidden h-9 items-center justify-center rounded-lg border border-border px-3.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none min-[500px]:flex cursor-pointer">
+                      <button
+                        disabled={isSignedOut}
+                        onClick={handleSignOut}
+                        className="hidden h-9 items-center justify-center rounded-lg border border-border px-3.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none min-[500px]:flex cursor-pointer">
                         Sign Out
                       </button>
                     </div> :
