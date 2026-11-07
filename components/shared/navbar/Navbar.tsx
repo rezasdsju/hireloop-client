@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image"
 import Link from "next/link"
 
@@ -7,6 +8,9 @@ import { cn } from "@/lib/utils"
 
 import { MobileMenu } from "./MobileMenu"
 import ThemeToggle from "./ThemeToggle"
+import { authClient } from "@/lib/auth-client"
+import UserAvatar from "./UserAvatar"
+import { SkeletonAvatar } from "./SkeletonAvatar"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -15,6 +19,9 @@ const navLinks = [
 ]
 
 const Navbar = () => {
+
+  const { data: session, isPending } = authClient.useSession()
+  const user = session?.user
   return (
     <header className="sticky -top-3 z-50 bg-background px-4 pt-3">
       <nav
@@ -50,23 +57,33 @@ const Navbar = () => {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            {
+              isPending ? <SkeletonAvatar /> :
+                user ? <div className="flex items-center gap-2">
+                  <UserAvatar user={user} />
+                  <button className="hidden min-[400px]:flex">Sign Out</button>
+                </div> :
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href="/sign-in"
+                      className="hidden text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 md:inline dark:text-indigo-400 dark:hover:text-indigo-300"
+                    >
+                      Sign In
+                    </Link>
 
-            <Link
-              href="/sign-in"
-              className="hidden text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 md:inline dark:text-indigo-400 dark:hover:text-indigo-300"
-            >
-              Sign In
-            </Link>
+                    <Link
+                      href="/register"
+                      className={cn(
+                        buttonVariants({ size: "lg" }),
+                        "hidden h-10 rounded-lg bg-indigo-600 px-5 text-white hover:bg-indigo-500 md:inline-flex"
+                      )}
+                    >
+                      Get Started
+                    </Link>
+                  </div>
 
-            <Link
-              href="/register"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "hidden h-10 rounded-lg bg-indigo-600 px-5 text-white hover:bg-indigo-500 md:inline-flex"
-              )}
-            >
-              Get Started
-            </Link>
+            }
+
 
             <div className="md:hidden">
               <MobileMenu />
