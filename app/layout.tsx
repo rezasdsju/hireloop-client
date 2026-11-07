@@ -6,6 +6,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/shared/navbar/Navbar";
+import { ToastProvider } from "@/components/ui/toast";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -33,8 +34,11 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <Navbar></Navbar>
-          {children}
+          <ToastProvider>
+            <Navbar></Navbar>
+            {children}
+          </ToastProvider>
+
         </ThemeProvider>
       </body>
     </html>
