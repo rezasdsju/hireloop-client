@@ -2,6 +2,7 @@
 import Link from "next/link"
 import { FcGoogle } from "react-icons/fc"
 import { IoLogoGithub } from "react-icons/io5"
+import { Building2, Search, ShieldCheck } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,10 +11,20 @@ import React, { useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "../ui/toast"
 import { useRouter } from "next/navigation"
+import { cn } from "@/lib/utils"
+
+const roles = [
+    { value: "seeker", label: "Job Seeker", icon: Search },
+    { value: "recruiter", label: "Recruiter", icon: Building2 },
+    { value: "admin", label: "Admin", icon: ShieldCheck },
+] as const
+
+type Role = (typeof roles)[number]["value"]
 
 
 const RegisterForm = () => {
     const [isRegistered, setIsRegistered] = useState(false)
+    const [role, setRole] = useState<Role>("seeker")
     const router = useRouter()
     const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -23,7 +34,8 @@ const RegisterForm = () => {
         const { data, error } = await authClient.signUp.email({
             name: userData.name as string,
             email: userData.email as string,
-            password: userData.password as string
+            password: userData.password as string,
+            role
         })
         if (error) {
             toast.add({
@@ -74,6 +86,34 @@ const RegisterForm = () => {
             </div>
 
             <form onSubmit={handleRegister} className="grid gap-4">
+                <fieldset className="grid gap-2">
+                    <legend className="mb-2 text-sm font-medium">I am a</legend>
+                    <div className="grid grid-cols-3 gap-2">
+                        {roles.map(({ value, label, icon: Icon }) => (
+                            <label
+                                key={value}
+                                className={cn(
+                                    "flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border px-2 py-2.5 text-center text-xs font-medium transition-colors has-focus-visible:ring-2 has-focus-visible:ring-indigo-500/40",
+                                    role === value
+                                        ? "border-indigo-600 bg-indigo-600/10 text-foreground"
+                                        : "border-border text-muted-foreground hover:bg-muted"
+                                )}
+                            >
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value={value}
+                                    checked={role === value}
+                                    onChange={() => setRole(value)}
+                                    className="sr-only"
+                                />
+                                <Icon className="size-4" />
+                                {label}
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
+
                 <div className="grid gap-2">
                     <Label htmlFor="name">Full name</Label>
                     <Input
