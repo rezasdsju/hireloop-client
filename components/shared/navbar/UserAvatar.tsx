@@ -11,22 +11,22 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useState } from "react";
 import { IUser } from "@/types/userTypes";
 
 
 
 interface IUserAvatar {
   user: IUser,
+  isOpen: boolean
 }
-export default function UserAvatar({ user }: IUserAvatar) {
-  const [isChevronUp, seIsChevronUp] = useState(false)
+export default function UserAvatar({ user,isOpen }: IUserAvatar) {
+
   return (
-    <div onClick={() => seIsChevronUp(!isChevronUp)}>
+    <div>
       <Tooltip>
         <TooltipTrigger render={
           <button>
-            <div className="flex items-center justify-center gap-2 rounded-3xl px-1 py-1 border border-border">
+            <div className="flex items-center justify-center gap-2 rounded-3xl px-1 py-1 border border-border cursor-pointer">
               <Avatar>
                 {
                   user.image ? <AvatarImage
@@ -39,7 +39,7 @@ export default function UserAvatar({ user }: IUserAvatar) {
               </Avatar>
 
               {
-                isChevronUp ? <BiChevronDown className="rotate-180" /> : <BiChevronDown />
+                isOpen ? <BiChevronDown className="rotate-180" /> : <BiChevronDown />
               }
             </div>
           </button>
