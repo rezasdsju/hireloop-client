@@ -12,13 +12,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useState } from "react";
+import { IUser } from "@/types/userTypes";
 
 
-interface IUser {
-  name: string,
-  email: string,
-  image?: string | null | undefined
-}
+
 interface IUserAvatar {
   user: IUser,
 }
