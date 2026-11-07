@@ -9,6 +9,13 @@ This repository contains the frontend of the application.
 [https://hireloop-jobs-board.vercel.app](https://hireloop-jobs-board.vercel.app)
 
 
+## Features
+
+- Responsive navbar with mobile menu
+- Light and dark theme toggle
+- User registration with email and password
+
+
 ## Technologies
 
 - Next.js
