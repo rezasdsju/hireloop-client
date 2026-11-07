@@ -25,7 +25,7 @@ export default function UserAvatar({ user,isOpen }: IUserAvatar) {
     <div>
       <Tooltip>
         <TooltipTrigger render={
-          <button>
+       
             <div className="flex items-center justify-center gap-2 rounded-3xl px-1 py-1 border border-border cursor-pointer">
               <Avatar>
                 {
@@ -42,7 +42,7 @@ export default function UserAvatar({ user,isOpen }: IUserAvatar) {
                 isOpen ? <BiChevronDown className="rotate-180" /> : <BiChevronDown />
               }
             </div>
-          </button>
+         
         } />
         <TooltipContent>
           <p>{user.name}</p>
