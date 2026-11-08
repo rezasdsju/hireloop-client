@@ -12,6 +12,7 @@ import { authClient } from "@/lib/auth-client"
 import { SkeletonAvatar } from "./SkeletonAvatar"
 import { ProfileMenu } from "./ProfileMenu"
 import useSignOut from "@/hooks/use-sign-out"
+import { SkeletonForDashboardNavLink } from "./SkeletonForDashboardNavLink"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -42,6 +43,11 @@ const Navbar = () => {
 
         <div className="flex items-center gap-6">
           <ul className="hidden items-center gap-8 md:flex">
+            {
+              isPending ? <SkeletonForDashboardNavLink></SkeletonForDashboardNavLink> : user?.role && user?.role === 'admin' ? <Link href={`/dashboard/admin`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link> :
+                user?.role === 'seeker' ? <Link href={`/dashboard/seeker`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link> :
+                  <Link href={`/dashboard/seeker`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
+            }
             {navLinks.map(({ label, href }) => (
               <li key={href}>
                 <Link
