@@ -4,13 +4,31 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
-    SidebarGroupAction,
-    SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Plus } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
+
+const menuItemsByRole = {
+    seeker: [
+
+    ],
+    recruiter: [
+
+    ],
+    admin: [
+
+    ]
+}
+
+
 const DashboardSideBar = () => {
+    const { data: session, isPending } = authClient.useSession()
+    const user = session?.user
+    const role = user?.role
     return (
         <Sidebar>
             <SidebarHeader />
@@ -18,11 +36,18 @@ const DashboardSideBar = () => {
                 <SidebarGroup />
                 <SidebarGroup />
                 <SidebarGroup>
-                    <SidebarGroupLabel>Application</SidebarGroupLabel>
-                    <SidebarGroupAction>
-                        <Plus /> <span className="sr-only">Add Project</span>
-                    </SidebarGroupAction>
-                    <SidebarGroupContent></SidebarGroupContent>
+                    <SidebarMenu>
+                        {
+                            menuItemsByRole[role].map((item) => (
+                                <SidebarMenuItem key={item.id}>
+                                    <SidebarMenuButton render={<Link href={item.url} />}>
+                                        <item.icon />
+                                        <span>{item.name}</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))
+                        }
+                    </SidebarMenu>
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter />
