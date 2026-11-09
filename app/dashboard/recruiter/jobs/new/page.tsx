@@ -29,6 +29,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import React, { useState } from "react";
 import { createJob } from "@/lib/actions/jobs";
 import { IJobs } from "@/types/jobTypes";
+import { toast } from "@/components/ui/toast";
 
 const Required = () => <span className="text-destructive">*</span>;
 
@@ -95,9 +96,23 @@ const NewJobPage = () => {
 
         try {
             const result = await createJob(form)
-            console.log(result)
+            // console.log(result)
+            if (result.acknowledged) {
+                toast.add({
+                    type: 'success',
+                    description: 'Successfully Created Job',
+                    priority: 'high'
+                })
+            }
         } catch (error) {
-            console.error("Failed to create job:", error)
+            const errorMessage = error instanceof Error
+                ? error.message
+                : "Something went wrong. Please try again."
+            toast.add({
+                type: 'error',
+                description: `${errorMessage}`,
+                priority: 'high'
+            })
         }
     }
 
