@@ -1,4 +1,4 @@
-export interface IJobs {
+export interface IJob {
     _id?: string,
     title: string;
     companyName: string;
