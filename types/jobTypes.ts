@@ -12,4 +12,6 @@ export interface IJobs {
     salaryFrequency: "per hour" | "per day" | "per month" | "per year";
     responsibilities: string;
     qualifications: string;
+    applicants?: number,
+    status?: 'active' | 'expired'
 }
