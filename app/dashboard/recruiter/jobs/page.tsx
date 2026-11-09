@@ -145,7 +145,7 @@ const ManageJobsPage = () => {
                     </p>
                 </div>
                 <Button
-                    type="button"
+                    nativeButton={false}
                     render={<Link href="/dashboard/recruiter/jobs/new" />}
                     className="shrink-0 gap-2"
                 >
