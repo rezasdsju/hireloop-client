@@ -1,7 +1,7 @@
-"use client";
+
 
 import Link from "next/link";
-import { Clock, EllipsisVertical, Eye, Mail, Plus, Trash, TrendingUp } from "lucide-react";
+import { Clock, Eye, Mail, Plus, Trash, TrendingUp } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,79 +23,80 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import type { IJobs } from "@/types/jobTypes";
+import { getJobs } from "@/lib/api/jobs";
 
-const jobs: IJobs[] = [
-    {
-        title: "Senior Product Designer",
-        companyName: "Nexus Lab",
-        category: "Design",
-        type: "full-time",
-        isRemote: false,
-        location: "London, UK",
-        deadline: "2026-12-24",
-        salaryMin: 90000,
-        salaryMax: 115000,
-        salaryFrequency: "per year",
-        responsibilities: "Lead product design for the core hiring experience.",
-        qualifications: "5+ years designing B2B SaaS products.",
-    },
-    {
-        title: "Full-stack Engineer",
-        companyName: "Quantum",
-        category: "Engineering",
-        type: "contract",
-        isRemote: true,
-        location: "Berlin, Germany",
-        deadline: "2027-01-22",
-        salaryMin: 70,
-        salaryMax: 95,
-        salaryFrequency: "per hour",
-        responsibilities: "Ship end-to-end features across the platform.",
-        qualifications: "Strong TypeScript and Node.js background.",
-    },
-    {
-        title: "Marketing Director",
-        companyName: "Vanguard",
-        category: "Marketing",
-        type: "full-time",
-        isRemote: false,
-        location: "New York, USA",
-        deadline: "2026-10-15",
-        salaryMin: 120000,
-        salaryMax: 150000,
-        salaryFrequency: "per year",
-        responsibilities: "Own brand strategy and demand generation.",
-        qualifications: "10+ years in B2B marketing leadership.",
-    },
-    {
-        title: "Backend Architect",
-        companyName: "CloudScale",
-        category: "Engineering",
-        type: "full-time",
-        isRemote: true,
-        location: "EU / US",
-        deadline: "2027-02-20",
-        salaryMin: 130000,
-        salaryMax: 165000,
-        salaryFrequency: "per year",
-        responsibilities: "Design distributed services and data models.",
-        qualifications: "Deep experience with distributed systems.",
-    },
-    {
-        title: "UX Research Lead",
-        companyName: "Humanize",
-        category: "Design",
-        type: "part-time",
-        isRemote: true,
-        location: "Dublin, Ireland",
-        deadline: "2027-03-19",
-        salaryMin: 45,
-        salaryMax: 60,
-        salaryFrequency: "per hour",
-        responsibilities: "Run discovery studies and usability testing.",
-        qualifications: "Mixed-methods research experience.",
-    },
-];
+// const jobs: IJobs[] = [
+//     {
+//         title: "Senior Product Designer",
+//         companyName: "Nexus Lab",
+//         category: "Design",
+//         type: "full-time",
+//         isRemote: false,
+//         location: "London, UK",
+//         deadline: "2026-12-24",
+//         salaryMin: 90000,
+//         salaryMax: 115000,
+//         salaryFrequency: "per year",
+//         responsibilities: "Lead product design for the core hiring experience.",
+//         qualifications: "5+ years designing B2B SaaS products.",
+//     },
+//     {
+//         title: "Full-stack Engineer",
+//         companyName: "Quantum",
+//         category: "Engineering",
+//         type: "contract",
+//         isRemote: true,
+//         location: "Berlin, Germany",
+//         deadline: "2027-01-22",
+//         salaryMin: 70,
+//         salaryMax: 95,
+//         salaryFrequency: "per hour",
+//         responsibilities: "Ship end-to-end features across the platform.",
+//         qualifications: "Strong TypeScript and Node.js background.",
+//     },
+//     {
+//         title: "Marketing Director",
+//         companyName: "Vanguard",
+//         category: "Marketing",
+//         type: "full-time",
+//         isRemote: false,
+//         location: "New York, USA",
+//         deadline: "2026-10-15",
+//         salaryMin: 120000,
+//         salaryMax: 150000,
+//         salaryFrequency: "per year",
+//         responsibilities: "Own brand strategy and demand generation.",
+//         qualifications: "10+ years in B2B marketing leadership.",
+//     },
+//     {
+//         title: "Backend Architect",
+//         companyName: "CloudScale",
+//         category: "Engineering",
+//         type: "full-time",
+//         isRemote: true,
+//         location: "EU / US",
+//         deadline: "2027-02-20",
+//         salaryMin: 130000,
+//         salaryMax: 165000,
+//         salaryFrequency: "per year",
+//         responsibilities: "Design distributed services and data models.",
+//         qualifications: "Deep experience with distributed systems.",
+//     },
+//     {
+//         title: "UX Research Lead",
+//         companyName: "Humanize",
+//         category: "Design",
+//         type: "part-time",
+//         isRemote: true,
+//         location: "Dublin, Ireland",
+//         deadline: "2027-03-19",
+//         salaryMin: 45,
+//         salaryMax: 60,
+//         salaryFrequency: "per hour",
+//         responsibilities: "Run discovery studies and usability testing.",
+//         qualifications: "Mixed-methods research experience.",
+//     },
+// ];
 
 const stats = [
     {
@@ -132,7 +133,8 @@ const isClosed = (deadline: string) => new Date(deadline).getTime() < Date.now()
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
-const ManageJobsPage = () => {
+const ManageJobsPage = async() => {
+    const jobs:IJobs[] = await getJobs()
     return (
         <div className="mx-auto w-full max-w-6xl px-6 py-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
@@ -145,7 +147,7 @@ const ManageJobsPage = () => {
                     </p>
                 </div>
                 <Button
-                    nativeButton={false}
+                    type="button"
                     render={<Link href="/dashboard/recruiter/jobs/new" />}
                     className="shrink-0 gap-2"
                 >
@@ -158,7 +160,7 @@ const ManageJobsPage = () => {
                 <div className="flex flex-col gap-1.5">
                     <Label>Status</Label>
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-45">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -172,7 +174,7 @@ const ManageJobsPage = () => {
                 <div className="flex flex-col gap-1.5">
                     <Label>Category</Label>
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-45">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -195,7 +197,7 @@ const ManageJobsPage = () => {
             </div>
 
             <div className="mt-6 overflow-hidden rounded-xl ring-1 ring-foreground/10">
-                <Table className="min-w-[820px]">
+                <Table className="min-w-205">
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
@@ -226,7 +228,7 @@ const ManageJobsPage = () => {
                             const closed = isClosed(job.deadline);
 
                             return (
-                                <TableRow key={`${job.companyName}-${job.title}`}>
+                                <TableRow key={`${job._id}-${job.title}`}>
                                     <TableCell className="font-medium">{job.title}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
@@ -277,15 +279,6 @@ const ManageJobsPage = () => {
                                                 className="text-muted-foreground hover:text-destructive"
                                             >
                                                 <Trash />
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon-sm"
-                                                aria-label={`More actions for ${job.title}`}
-                                                className="text-muted-foreground"
-                                            >
-                                                <EllipsisVertical />
                                             </Button>
                                         </div>
                                     </TableCell>
