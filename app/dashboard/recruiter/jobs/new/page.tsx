@@ -26,7 +26,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import React from "react";
+import React, { useState } from "react";
+import { createJob } from "@/lib/actions/jobs";
+import { IJobs } from "@/types/jobTypes";
 
 const Required = () => <span className="text-destructive">*</span>;
 
@@ -64,23 +66,41 @@ const salaryFrequencies = [
 ];
 
 const NewJobPage = () => {
+    const [form, setForm] = useState<IJobs>({
+        title: "",
+        companyName: "",
+        category: "Engineering & Tech",
+        type: "full-time",
+        isRemote: true,
+        location: "",
+        deadline: "",
+        salaryMin: undefined,
+        salaryMax: undefined,
+        salaryFrequency: "per hour",
+        responsibilities: "",
+        qualifications: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value, type } = e.target
+        setForm((prev) => ({
+            ...prev,
+            [name]: type === "number" ? (value === "" ? undefined : Number(value)) : value,
+        }))
+    }
+
+    // ✅ CHANGED (১): React.SubmitEvent -> React.FormEvent
     const handleAddJob = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const formData = new FormData(e.currentTarget)
-        const jobData = Object.fromEntries(formData.entries())
-        console.log(jobData)
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/jobs`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jobData)
-
-        })
-        const result = await res.json()
-        console.log(result)
+        try {
+            const result = await createJob(form)
+            console.log(result)
+        } catch (error) {
+            console.error("Failed to create job:", error)
+        }
     }
+
     return (
         <div className="mx-auto w-full max-w-5xl px-6 py-6">
             <Breadcrumb>
@@ -107,7 +127,6 @@ const NewJobPage = () => {
                         network.
                     </p>
                 </div>
-
             </div>
 
             <form onSubmit={handleAddJob} className="mt-6 flex flex-col gap-6">
@@ -124,6 +143,8 @@ const NewJobPage = () => {
                             <Input
                                 id="job-title"
                                 name="title"
+                                value={form.title}
+                                onChange={handleChange}
                                 placeholder="Frontend Developer"
                                 required
                             />
@@ -137,6 +158,8 @@ const NewJobPage = () => {
                                 <div className="relative">
                                     <Building2 className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
                                     <Input
+                                        value={form.companyName}
+                                        onChange={handleChange}
                                         id="company-name"
                                         name="companyName"
                                         className="pl-8"
@@ -150,7 +173,10 @@ const NewJobPage = () => {
                                 <Label htmlFor="job-category">
                                     Job Category <Required />
                                 </Label>
-                                <Select name="category" defaultValue="Engineering & Tech">
+                                <Select
+                                    value={form.category}
+                                    onValueChange={(v) => setForm((prev) => ({ ...prev, category: v ?? prev.category }))}
+                                >
                                     <SelectTrigger id="job-category" className="w-full">
                                         <SelectValue />
                                     </SelectTrigger>
@@ -170,7 +196,8 @@ const NewJobPage = () => {
                                 Job Type <Required />
                             </Label>
                             <ToggleGroup
-                                defaultValue={["full-time"]}
+                                value={[form.type]}
+                                onValueChange={(v) => v[0] && setForm((prev) => ({ ...prev, type: v[0] as IJobs["type"] }))}
                                 variant="outline"
                                 className="w-full"
                             >
@@ -214,7 +241,10 @@ const NewJobPage = () => {
                                     </p>
                                 </div>
                             </div>
-                            <Switch name="isRemote" defaultChecked />
+                            <Switch
+                                checked={form.isRemote}
+                                onCheckedChange={(checked) => setForm((prev) => ({ ...prev, isRemote: checked }))}
+                            />
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-2">
@@ -233,6 +263,8 @@ const NewJobPage = () => {
                                     <Input
                                         id="location"
                                         name="location"
+                                        value={form.location}
+                                        onChange={handleChange}
                                         className="pl-8"
                                         placeholder="New York, USA"
                                         required
@@ -253,8 +285,9 @@ const NewJobPage = () => {
                                         id="deadline"
                                         name="deadline"
                                         type="date"
-                                        className="pl-8 [&::-webkit-calendar-picker-indicator]:hidden"
-                                        defaultValue="2025-05-30"
+                                        value={form.deadline}
+                                        onChange={handleChange}
+                                        className="pl-8 "
                                     />
                                 </div>
                             </div>
@@ -271,6 +304,8 @@ const NewJobPage = () => {
                                         id="salary-min"
                                         name="salaryMin"
                                         type="number"
+                                        value={form.salaryMin ?? ""}
+                                        onChange={handleChange}
                                         className="pl-7"
                                         placeholder="25"
                                     />
@@ -287,6 +322,8 @@ const NewJobPage = () => {
                                         id="salary-max"
                                         name="salaryMax"
                                         type="number"
+                                        value={form.salaryMax ?? ""}
+                                        onChange={handleChange}
                                         className="pl-7"
                                         placeholder="40"
                                     />
@@ -295,7 +332,11 @@ const NewJobPage = () => {
 
                             <div className="flex flex-col gap-1.5">
                                 <Label htmlFor="salary-frequency">Frequency</Label>
-                                <Select name="salaryFrequency" defaultValue="per hour">
+                                {/* ✅ CHANGED (২): name="salaryFrequency" বাদ দেওয়া হয়েছে */}
+                                <Select
+                                    value={form.salaryFrequency}
+                                    onValueChange={(v) => setForm((prev) => ({ ...prev, salaryFrequency: v ?? prev.salaryFrequency }))}
+                                >
                                     <SelectTrigger id="salary-frequency" className="w-full">
                                         <SelectValue />
                                     </SelectTrigger>
@@ -331,6 +372,8 @@ const NewJobPage = () => {
                             <Textarea
                                 id="responsibilities"
                                 name="responsibilities"
+                                value={form.responsibilities}
+                                onChange={handleChange}
                                 className="min-h-24"
                                 placeholder="Showcase your commitment to delivering exceptional user interfaces and digital experiences. You will collaborate directly with systems designers and backend engineers to craft responsive, micro-interaction rich products."
                                 required
@@ -344,6 +387,8 @@ const NewJobPage = () => {
                             <Textarea
                                 id="qualifications"
                                 name="qualifications"
+                                value={form.qualifications}
+                                onChange={handleChange}
                                 className="min-h-24"
                                 placeholder={
                                     "• 3+ years of experience with React, TypeScript, and modern state architectures\n• Solid understanding of DOM performance and component-driven designs\n• Experience partnering closely with product teams and UX/UI designers"
