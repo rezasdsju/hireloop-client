@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import type { IJobs } from "@/types/jobTypes";
 import { getJobs } from "@/lib/api/jobs";
+import { DeleteJobDialog } from "@/app/components/DeleteJobDialog";
 
 // const jobs: IJobs[] = [
 //     {
@@ -278,7 +279,7 @@ const ManageJobsPage = async() => {
                                                 aria-label={`Delete ${job.title}`}
                                                 className="text-muted-foreground hover:text-destructive"
                                             >
-                                                <Trash />
+                                                <DeleteJobDialog job={job} />
                                             </Button>
                                         </div>
                                     </TableCell>
