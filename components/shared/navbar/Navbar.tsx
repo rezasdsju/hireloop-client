@@ -44,9 +44,9 @@ const Navbar = () => {
         <div className="flex items-center gap-6">
           <ul className="hidden items-center gap-8 md:flex">
             {
-              isPending ? <SkeletonForDashboardNavLink></SkeletonForDashboardNavLink> : user && (user?.role && user?.role === 'admin' ? <Link href={`/dashboard/admin`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link> :
-                user?.role === 'seeker' ? <Link href={`/dashboard/seeker`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link> :
-                  <Link href={`/dashboard/seeker`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>)
+              isPending ? <SkeletonForDashboardNavLink></SkeletonForDashboardNavLink> : user && (user?.role && user?.role === 'admin' ? <Link href={`/dashboard/admin`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer">Dashboard</Link> :
+                user?.role === 'seeker' ? <Link href={`/dashboard/seeker`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer">Dashboard</Link> :
+                  <Link href={`/dashboard/recruiter`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer">Dashboard</Link>)
             }
             {navLinks.map(({ label, href }) => (
               <li key={href}>
