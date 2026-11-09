@@ -16,6 +16,9 @@ This repository contains the frontend of the application.
 - User registration and sign in with email and password
 - User roles: job seeker, recruiter and admin
 - Profile menu with sign out
+- Role-based dashboards for recruiter, seeker and admin
+- Job posting for recruiters
+
 
 ## Technologies
 
