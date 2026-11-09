@@ -26,6 +26,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import React from "react";
 
 const Required = () => <span className="text-destructive">*</span>;
 
@@ -63,6 +64,23 @@ const salaryFrequencies = [
 ];
 
 const NewJobPage = () => {
+    const handleAddJob = async (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+        const jobData = Object.fromEntries(formData.entries())
+        console.log(jobData)
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/jobs`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jobData)
+
+        })
+        const result = await res.json()
+        console.log(result)
+    }
     return (
         <div className="mx-auto w-full max-w-5xl px-6 py-6">
             <Breadcrumb>
@@ -89,13 +107,10 @@ const NewJobPage = () => {
                         network.
                     </p>
                 </div>
-                <Button type="button" className="shrink-0 gap-2">
-                    Publish Job
-                    <Send />
-                </Button>
+
             </div>
 
-            <form className="mt-6 flex flex-col gap-6">
+            <form onSubmit={handleAddJob} className="mt-6 flex flex-col gap-6">
                 {/* 1. Basic Information */}
                 <Card>
                     <CardHeader>
@@ -338,6 +353,12 @@ const NewJobPage = () => {
                         </div>
                     </CardContent>
                 </Card>
+                <section>
+                    <Button type="submit" className="shrink-0 gap-2">
+                        Publish Job
+                        <Send />
+                    </Button>
+                </section>
             </form>
         </div>
     );
