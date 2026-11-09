@@ -67,7 +67,7 @@ const DashboardSideBar = () => {
     const { data: session, isPending } = authClient.useSession()
     const user = session?.user
     const role = user?.role as Role | undefined
-    console.log({ isPending, user, role })
+    // console.log({ isPending, user, role })
 
     if (isPending) {
         return <SkeletonLoading />
