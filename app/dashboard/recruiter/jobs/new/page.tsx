@@ -27,6 +27,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createJob } from "@/lib/actions/jobs";
 import { IJob } from "@/types/jobTypes";
 import { toast } from "@/components/ui/toast";
@@ -67,6 +68,7 @@ const salaryFrequencies = [
 ];
 
 const NewJobPage = () => {
+    const router = useRouter()
     const [form, setForm] = useState<IJob>({
         title: "",
         companyName: "",
@@ -103,6 +105,7 @@ const NewJobPage = () => {
                     description: 'Successfully Created Job',
                     priority: 'high'
                 })
+                router.push("/dashboard/recruiter/jobs")
             }
         } catch (error) {
             const errorMessage = error instanceof Error
