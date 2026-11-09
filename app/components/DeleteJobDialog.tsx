@@ -23,7 +23,7 @@ import { useRouter } from "next/navigation"
 
 
 export function DeleteJobDialog({ job }: { job: IJob }) {
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(false)
 
     const router = useRouter()
     const handleDelete = async () => {
@@ -42,7 +42,16 @@ export function DeleteJobDialog({ job }: { job: IJob }) {
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger
-                render={<Button variant="destructive"><Trash2Icon /></Button>}
+                render={
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`Delete ${job.title}`}
+                        className="text-muted-foreground hover:text-destructive"
+                    >
+                        <Trash2Icon />
+                    </Button>
+                }
             />
             <AlertDialogContent size="sm">
                 <AlertDialogHeader>

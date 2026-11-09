@@ -15,57 +15,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createJob } from "@/lib/actions/jobs";
-import { IJob } from "@/types/jobTypes";
+import type { IJob, JobType } from "@/types/jobTypes";
 import { toast } from "@/components/ui/toast";
-
-const Required = () => <span className="text-destructive">*</span>;
-
-const SectionHeading = ({ number, title }: { number: number; title: string }) => (
-    <div className="flex items-center gap-2">
-        <span className="flex size-5 items-center justify-center rounded-md bg-orange-500 text-[11px] font-semibold text-white">
-            {number}
-        </span>
-        <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
-    </div>
-);
-
-const jobTypes = [
-    { value: "full-time", label: "Full-time" },
-    { value: "part-time", label: "Part-time" },
-    { value: "contract", label: "Contract" },
-    { value: "internship", label: "Internship" },
-];
-
-const jobCategories = [
-    "Engineering & Tech",
-    "Design & Creative",
-    "Marketing",
-    "Sales",
-    "Finance & Accounting",
-    "Operations",
-    "Customer Support",
-];
-
-const salaryFrequencies = [
-    { value: "per hour", label: "per hour" },
-    { value: "per day", label: "per day" },
-    { value: "per month", label: "per month" },
-    { value: "per year", label: "per year" },
-];
+import { FormField } from "@/app/components/jobs/FormField";
+import { InputWithAdornment } from "@/app/components/jobs/InputWithAdornment";
+import { PageHeader } from "@/app/components/jobs/PageHeader";
+import { SectionHeading } from "@/app/components/jobs/SectionHeading";
+import { JOB_CATEGORIES, JOB_TYPES, SALARY_FREQUENCIES } from "@/lib/jobs/options";
 
 const NewJobPage = () => {
     const router = useRouter()
@@ -92,13 +55,11 @@ const NewJobPage = () => {
         }))
     }
 
-    // ✅ CHANGED (১): React.SubmitEvent -> React.FormEvent
     const handleAddJob = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         try {
             const result = await createJob(form)
-            // console.log(result)
             if (result.acknowledged) {
                 toast.add({
                     type: 'success',
@@ -135,17 +96,11 @@ const NewJobPage = () => {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                    <h1 className="font-heading text-2xl font-semibold tracking-tight">
-                        Post a New Job
-                    </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        Fill in the position specifications to attract qualified talent across our
-                        network.
-                    </p>
-                </div>
-            </div>
+            <PageHeader
+                className="mt-2"
+                title="Post a New Job"
+                description="Fill in the position specifications to attract qualified talent across our network."
+            />
 
             <form onSubmit={handleAddJob} className="mt-6 flex flex-col gap-6">
                 {/* 1. Basic Information */}
@@ -154,10 +109,7 @@ const NewJobPage = () => {
                         <SectionHeading number={1} title="Basic Information" />
                     </CardHeader>
                     <CardContent className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="job-title">
-                                Job Title <Required />
-                            </Label>
+                        <FormField label="Job Title" htmlFor="job-title" required>
                             <Input
                                 id="job-title"
                                 name="title"
@@ -166,31 +118,22 @@ const NewJobPage = () => {
                                 placeholder="Frontend Developer"
                                 required
                             />
-                        </div>
+                        </FormField>
 
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="company-name">
-                                    Company Name <Required />
-                                </Label>
-                                <div className="relative">
-                                    <Building2 className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        value={form.companyName}
-                                        onChange={handleChange}
-                                        id="company-name"
-                                        name="companyName"
-                                        className="pl-8"
-                                        placeholder="HirePulse Network"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                            <FormField label="Company Name" htmlFor="company-name" required>
+                                <InputWithAdornment
+                                    icon={Building2}
+                                    value={form.companyName}
+                                    onChange={handleChange}
+                                    id="company-name"
+                                    name="companyName"
+                                    placeholder="HirePulse Network"
+                                    required
+                                />
+                            </FormField>
 
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="job-category">
-                                    Job Category <Required />
-                                </Label>
+                            <FormField label="Job Category" htmlFor="job-category" required>
                                 <Select
                                     value={form.category}
                                     onValueChange={(v) => setForm((prev) => ({ ...prev, category: v ?? prev.category }))}
@@ -199,27 +142,24 @@ const NewJobPage = () => {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {jobCategories.map((category) => (
+                                        {JOB_CATEGORIES.map((category) => (
                                             <SelectItem key={category} value={category}>
                                                 {category}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
-                            </div>
+                            </FormField>
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
-                            <Label>
-                                Job Type <Required />
-                            </Label>
+                        <FormField label="Job Type" required>
                             <ToggleGroup
                                 value={[form.type]}
-                                onValueChange={(v) => v[0] && setForm((prev) => ({ ...prev, type: v[0] as IJob["type"] }))}
+                                onValueChange={(v) => v[0] && setForm((prev) => ({ ...prev, type: v[0] as JobType }))}
                                 variant="outline"
                                 className="w-full"
                             >
-                                {jobTypes.map((type) => (
+                                {JOB_TYPES.map((type) => (
                                     <ToggleGroupItem
                                         key={type.value}
                                         value={type.value}
@@ -229,7 +169,7 @@ const NewJobPage = () => {
                                     </ToggleGroupItem>
                                 ))}
                             </ToggleGroup>
-                        </div>
+                        </FormField>
                     </CardContent>
                 </Card>
 
@@ -266,91 +206,66 @@ const NewJobPage = () => {
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <div className="flex flex-col gap-1.5">
-                                <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-                                    <Label htmlFor="location" className="whitespace-nowrap">
-                                        Job Location{" "}
-                                        <span className="font-normal text-muted-foreground">
-                                            (location)
-                                        </span>
-                                    </Label>
-                                    <Badge variant="outline">Required</Badge>
-                                </div>
-                                <div className="relative">
-                                    <MapPin className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        id="location"
-                                        name="location"
-                                        value={form.location}
-                                        onChange={handleChange}
-                                        className="pl-8"
-                                        placeholder="New York, USA"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                            <FormField
+                                label="Job Location"
+                                htmlFor="location"
+                                annotation="(location)"
+                                labelClassName="whitespace-nowrap"
+                                badge={<Badge variant="outline">Required</Badge>}
+                            >
+                                <InputWithAdornment
+                                    icon={MapPin}
+                                    id="location"
+                                    name="location"
+                                    value={form.location}
+                                    onChange={handleChange}
+                                    placeholder="New York, USA"
+                                    required
+                                />
+                            </FormField>
 
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="deadline">
-                                    Application Deadline{" "}
-                                    <span className="font-normal text-muted-foreground">
-                                        (deadline)
-                                    </span>
-                                </Label>
-                                <div className="relative">
-                                    <Calendar className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        id="deadline"
-                                        name="deadline"
-                                        type="date"
-                                        value={form.deadline}
-                                        onChange={handleChange}
-                                        className="pl-8 "
-                                    />
-                                </div>
-                            </div>
+                            <FormField
+                                label="Application Deadline"
+                                htmlFor="deadline"
+                                annotation="(deadline)"
+                            >
+                                <InputWithAdornment
+                                    icon={Calendar}
+                                    id="deadline"
+                                    name="deadline"
+                                    type="date"
+                                    value={form.deadline}
+                                    onChange={handleChange}
+                                />
+                            </FormField>
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-3">
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="salary-min">Min Salary / Rate</Label>
-                                <div className="relative">
-                                    <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-sm text-muted-foreground">
-                                        €
-                                    </span>
-                                    <Input
-                                        id="salary-min"
-                                        name="salaryMin"
-                                        type="number"
-                                        value={form.salaryMin ?? ""}
-                                        onChange={handleChange}
-                                        className="pl-7"
-                                        placeholder="25"
-                                    />
-                                </div>
-                            </div>
+                            <FormField label="Min Salary / Rate" htmlFor="salary-min">
+                                <InputWithAdornment
+                                    prefix="€"
+                                    id="salary-min"
+                                    name="salaryMin"
+                                    type="number"
+                                    value={form.salaryMin ?? ""}
+                                    onChange={handleChange}
+                                    placeholder="25"
+                                />
+                            </FormField>
 
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="salary-max">Max Salary / Rate</Label>
-                                <div className="relative">
-                                    <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-sm text-muted-foreground">
-                                        €
-                                    </span>
-                                    <Input
-                                        id="salary-max"
-                                        name="salaryMax"
-                                        type="number"
-                                        value={form.salaryMax ?? ""}
-                                        onChange={handleChange}
-                                        className="pl-7"
-                                        placeholder="40"
-                                    />
-                                </div>
-                            </div>
+                            <FormField label="Max Salary / Rate" htmlFor="salary-max">
+                                <InputWithAdornment
+                                    prefix="€"
+                                    id="salary-max"
+                                    name="salaryMax"
+                                    type="number"
+                                    value={form.salaryMax ?? ""}
+                                    onChange={handleChange}
+                                    placeholder="40"
+                                />
+                            </FormField>
 
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="salary-frequency">Frequency</Label>
-                                {/* ✅ CHANGED (২): name="salaryFrequency" বাদ দেওয়া হয়েছে */}
+                            <FormField label="Frequency" htmlFor="salary-frequency">
                                 <Select
                                     value={form.salaryFrequency}
                                     onValueChange={(v) => setForm((prev) => ({ ...prev, salaryFrequency: v ?? prev.salaryFrequency }))}
@@ -359,7 +274,7 @@ const NewJobPage = () => {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {salaryFrequencies.map((frequency) => (
+                                        {SALARY_FREQUENCIES.map((frequency) => (
                                             <SelectItem
                                                 key={frequency.value}
                                                 value={frequency.value}
@@ -369,7 +284,7 @@ const NewJobPage = () => {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                            </div>
+                            </FormField>
                         </div>
                     </CardContent>
                 </Card>
@@ -383,10 +298,7 @@ const NewJobPage = () => {
                         />
                     </CardHeader>
                     <CardContent className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="responsibilities">
-                                Key Responsibilities <Required />
-                            </Label>
+                        <FormField label="Key Responsibilities" htmlFor="responsibilities" required>
                             <Textarea
                                 id="responsibilities"
                                 name="responsibilities"
@@ -396,12 +308,9 @@ const NewJobPage = () => {
                                 placeholder="Showcase your commitment to delivering exceptional user interfaces and digital experiences. You will collaborate directly with systems designers and backend engineers to craft responsive, micro-interaction rich products."
                                 required
                             />
-                        </div>
+                        </FormField>
 
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="qualifications">
-                                Qualifications &amp; Requirements <Required />
-                            </Label>
+                        <FormField label="Qualifications & Requirements" htmlFor="qualifications" required>
                             <Textarea
                                 id="qualifications"
                                 name="qualifications"
@@ -413,7 +322,7 @@ const NewJobPage = () => {
                                 }
                                 required
                             />
-                        </div>
+                        </FormField>
                     </CardContent>
                 </Card>
                 <section>
