@@ -14,7 +14,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { IJobs } from "@/types/jobTypes"
+import { IJob } from "@/types/jobTypes"
 import { deleteJob } from "@/lib/api/jobs"
 import { toast } from "@/components/ui/toast"
 import { useState } from "react"
@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation"
 
 
 
-export function DeleteJobDialog({ job }: { job: IJobs }) {
+export function DeleteJobDialog({ job }: { job: IJob }) {
     const [open, setOpen] = useState(true)
 
     const router = useRouter()
