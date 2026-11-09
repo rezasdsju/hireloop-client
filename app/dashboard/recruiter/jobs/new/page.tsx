@@ -28,7 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import React, { useState } from "react";
 import { createJob } from "@/lib/actions/jobs";
-import { IJobs } from "@/types/jobTypes";
+import { IJob } from "@/types/jobTypes";
 import { toast } from "@/components/ui/toast";
 
 const Required = () => <span className="text-destructive">*</span>;
@@ -67,7 +67,7 @@ const salaryFrequencies = [
 ];
 
 const NewJobPage = () => {
-    const [form, setForm] = useState<IJobs>({
+    const [form, setForm] = useState<IJob>({
         title: "",
         companyName: "",
         category: "Engineering & Tech",
@@ -212,7 +212,7 @@ const NewJobPage = () => {
                             </Label>
                             <ToggleGroup
                                 value={[form.type]}
-                                onValueChange={(v) => v[0] && setForm((prev) => ({ ...prev, type: v[0] as IJobs["type"] }))}
+                                onValueChange={(v) => v[0] && setForm((prev) => ({ ...prev, type: v[0] as IJob["type"] }))}
                                 variant="outline"
                                 className="w-full"
                             >
