@@ -5,7 +5,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
-import { ToastProvider } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toast";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -33,9 +33,9 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <ToastProvider>
+          <Toaster>
             {children}
-          </ToastProvider>
+          </Toaster>
 
         </ThemeProvider>
       </body>
