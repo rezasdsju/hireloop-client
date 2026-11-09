@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Eye, Mail, Plus, Trash, TrendingUp } from "lucide-react";
+import { Clock, EllipsisVertical, Eye, Mail, Plus, Trash, TrendingUp } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -277,6 +277,15 @@ const ManageJobsPage = () => {
                                                 className="text-muted-foreground hover:text-destructive"
                                             >
                                                 <Trash />
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon-sm"
+                                                aria-label={`More actions for ${job.title}`}
+                                                className="text-muted-foreground"
+                                            >
+                                                <EllipsisVertical />
                                             </Button>
                                         </div>
                                     </TableCell>
