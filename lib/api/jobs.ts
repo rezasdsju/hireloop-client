@@ -9,7 +9,6 @@ export const getJobs = async(query:string=""):Promise<IJob[]>=>{
 }
 
 
-// The API has no single job endpoint yet, so the list is used to find the job.
 export const getJobById = async(jobId:string):Promise<IJob>=>{
     const res = await fetch(`${BASE_URL}/jobs/${jobId}`)
     return res.json()
