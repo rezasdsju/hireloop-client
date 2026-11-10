@@ -18,7 +18,13 @@ This repository contains the frontend of the application.
 - Profile menu with sign out
 - Role-based dashboards for recruiter, seeker and admin
 - Job posting and deletion for recruiters
-
+- Public job browsing with search by title, keywords and company
+- Filter sidebar for job type, category and work mode with live option counts
+- Sorting by most recent, highest salary and closing deadline
+- Job cards with company, location/remote, salary and type badges, and a bookmark action
+- Numbered pagination with previous/next controls
+- Empty state when no jobs match the current search or filters
+- URL-driven state (`search`, `jobType`, `category`, `isRemote`, `page`, `sort`) so filtered views can be bookmarked and shared
 
 ## Technologies
 
