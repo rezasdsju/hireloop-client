@@ -9,10 +9,12 @@ import { Label } from "@/components/ui/label"
 import React, { useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "../ui/toast"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const SignInForm = () => {
     const [isSignedIn, setIsSignedIn] = useState(false)
+    const searchParams = useSearchParams()
+    const redirectTo = searchParams.get('redirectTo') ?? "/"
     const router = useRouter()
     const handleSignIn = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -22,7 +24,9 @@ const SignInForm = () => {
 
         const { data, error } = await authClient.signIn.email({
             email: userData.email as string,
-            password: userData.password as string
+            password: userData.password as string,
+            rememberMe: true,
+            callbackURL: redirectTo
         })
         if (error) {
             toast.add({
@@ -39,7 +43,7 @@ const SignInForm = () => {
                 priority: 'high'
             })
             setIsSignedIn(true)
-            setTimeout(() => router.replace('/'), 1500)
+            setTimeout(() => router.replace(redirectTo), 1500)
         }
 
     }
