@@ -41,3 +41,14 @@ export const JOB_CATEGORY_FILTERS = [
     { value: "engineering", label: "Engineering" },
     { value: "marketing", label: "Marketing" },
 ];
+
+export const JOB_WORK_MODES = [
+    { value: "true", label: "Remote", isRemote: true },
+    { value: "false", label: "On-site", isRemote: false },
+];
+
+export const JOB_SORT_OPTIONS = [
+    { value: "recent", label: "Most Recent" },
+    { value: "salary", label: "Highest Salary" },
+    { value: "deadline", label: "Closing Soon" },
+];
