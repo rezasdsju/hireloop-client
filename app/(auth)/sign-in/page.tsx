@@ -1,5 +1,7 @@
+import { SkeletonLoading } from "@/app/components/SkeletonLoading"
 import SignInForm from "@/components/auth/SignInForm"
 import type { Metadata } from "next"
+import { Suspense } from "react"
 
 
 export const metadata: Metadata = {
@@ -11,6 +13,8 @@ export const metadata: Metadata = {
 // and the form cannot submit.
 export default function SignInPage() {
   return (
-    <SignInForm />
+    <Suspense fallback={<div><SkeletonLoading /></div>}>
+      <SignInForm />
+    </Suspense>
   )
 }
