@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import Navbar from "@/components/shared/navbar/Navbar";
 import { JobDetails } from "@/app/components/browse-jobs/JobDetails";
-import { getJob } from "@/lib/api/jobs";
+import { getJobById } from "@/lib/api/jobs";
 
 const JobDetailPage = async ({
     params,
@@ -10,7 +10,7 @@ const JobDetailPage = async ({
     params: Promise<{ id: string }>
 }) => {
     const { id } = await params
-    const job = await getJob(id)
+    const job = await getJobById(id)
 
     if (!job) notFound()
 
