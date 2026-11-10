@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Bookmark, Briefcase, DollarSign } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -39,7 +40,7 @@ export const JobCard = ({ job }: { job: IJob }) => {
 
     return (
         <Card className="p-6">
-            <div className="flex items-start gap-5">
+            <Link href={`/browse-jobs/${job._id}`} className="flex items-start gap-5">
                 <div className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-muted text-xl font-semibold">
                     {job.companyName.charAt(0).toUpperCase()}
                 </div>
@@ -72,7 +73,7 @@ export const JobCard = ({ job }: { job: IJob }) => {
                         {closed && <JobTag tone="warning">Closed</JobTag>}
                     </div>
                 </div>
-            </div>
+            </Link>
         </Card>
     );
 };
