@@ -6,16 +6,28 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import React from "react";
+import { useRouter } from "next/navigation";
 
 type JobSearchBarProps = {
     defaultValue?: string;
 };
 
 export const JobSearchBar = ({ defaultValue = "" }: JobSearchBarProps) => {
-    const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    const router = useRouter()
+    const handleSearch = (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         // TODO: read the search value and update the query string, e.g.
         // router.push(`/browse-jobs?${new URLSearchParams({ q: value })}`)
+        const formData = new FormData(event.currentTarget)
+        const data = Object.fromEntries(formData.entries())
+        console.log(data)
+        const search = data.search 
+        console.log(search)
+
+        const params = new URLSearchParams()
+        params.set('search',search as string)
+        router.push(`/browse-jobs/${params.toString()}`)
     };
 
     return (
