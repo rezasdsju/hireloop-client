@@ -14,70 +14,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IApplication, ApplicationStatus } from "@/types/applicationType";
-
-const dummyApplications: IApplication[] = [
-    {
-        _id: "app-1",
-        jobId: "job-1",
-        userId: "user-1",
-        userEmail: "alex@example.com",
-        jobTitle: "Senior Product Designer",
-        companyName: "Northstar Labs",
-        companyLogo: "N",
-        location: "Remote · US",
-        salary: "$120k - $150k / year",
-        employmentType: "Full-time",
-        status: "reviewing",
-        appliedAt: "2026-11-02T10:00:00.000Z",
-        updatedAt: "2026-11-06T15:30:00.000Z",
-    },
-    {
-        _id: "app-2",
-        jobId: "job-2",
-        userId: "user-1",
-        userEmail: "alex@example.com",
-        jobTitle: "Frontend Engineer",
-        companyName: "Horizon Studio",
-        companyLogo: "H",
-        location: "New York, NY",
-        salary: "$95k - $125k / year",
-        employmentType: "Hybrid",
-        status: "interview",
-        appliedAt: "2026-10-19T09:25:00.000Z",
-        updatedAt: "2026-11-07T12:00:00.000Z",
-    },
-    {
-        _id: "app-3",
-        jobId: "job-3",
-        userId: "user-1",
-        userEmail: "alex@example.com",
-        jobTitle: "Marketing Operations Associate",
-        companyName: "Bluebird Commerce",
-        companyLogo: "B",
-        location: "Austin, TX",
-        salary: "$68k - $82k / year",
-        employmentType: "Full-time",
-        status: "pending",
-        appliedAt: "2026-11-08T14:10:00.000Z",
-        updatedAt: "2026-11-08T14:10:00.000Z",
-    },
-    {
-        _id: "app-4",
-        jobId: "job-4",
-        userId: "user-1",
-        userEmail: "alex@example.com",
-        jobTitle: "Data Analyst",
-        companyName: "Pillar.io",
-        companyLogo: "P",
-        location: "Remote · Europe",
-        salary: "$80k - $96k / year",
-        employmentType: "Contract",
-        status: "accepted",
-        appliedAt: "2026-09-12T11:50:00.000Z",
-        updatedAt: "2026-11-02T08:15:00.000Z",
-    },
-];
-
+import { getApplications } from "@/lib/actions/applications";
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 const statusStyles: Record<ApplicationStatus, string> = {
     pending: "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400",
     reviewing: "border-sky-500/40 bg-sky-500/10 text-sky-600 dark:text-sky-400",
@@ -101,12 +40,18 @@ const formatDate = (value: string) =>
         year: "numeric",
     });
 
-const ApplicationPage = () => {
-    const totalApplications = dummyApplications.length;
-    const activeApplications = dummyApplications.filter(
+const ApplicationPage = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
+    console.log(session)
+    const applications: IApplication[] = await getApplications(`applicantId=${session?.user?.id}`);
+    console.log(applications)
+    const totalApplications = applications.length;
+    const activeApplications = applications.filter(
         (application) => application.status !== "accepted" && application.status !== "rejected"
     ).length;
-    const interviews = dummyApplications.filter((application) => application.status === "interview").length;
+    const interviews = applications.filter((application) => application.status === "interview").length;
 
     return (
         <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
@@ -171,8 +116,11 @@ const ApplicationPage = () => {
 
                 <CardContent className="p-0">
                     <div className="space-y-4 p-4 sm:p-5">
-                        {dummyApplications.map((application) => (
-                            <Card key={application._id} className="gap-4 p-4 sm:p-5">
+                        {applications.length > 0 ? applications.map((application) => (
+                            <Card
+                                key={application._id ?? `${application.jobId}-${application.appliedAt}`}
+                                className="gap-4 p-4 sm:p-5"
+                            >
                                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                                     <div className="flex min-w-0 items-center gap-4">
                                         <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-lg font-semibold text-muted-foreground">
@@ -231,7 +179,20 @@ const ApplicationPage = () => {
                                     </div>
                                 </div>
                             </Card>
-                        ))}
+                        )) : (
+                            <div className="flex flex-col items-center gap-3 py-12 text-center">
+                                <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+                                    <Briefcase className="size-5 text-muted-foreground" />
+                                </div>
+                                <div>
+                                    <h2 className="font-semibold">No applications yet</h2>
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        Explore open roles and track your applications here.
+                                    </p>
+                                </div>
+                                <Button render={<Link href="/browse-jobs" />}>Browse jobs</Button>
+                            </div>
+                        )}
                     </div>
                 </CardContent>
             </Card>
