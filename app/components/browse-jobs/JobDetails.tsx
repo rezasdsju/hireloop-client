@@ -1,3 +1,4 @@
+'use client'
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -14,6 +15,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { capitalize, formatDeadline, formatLocation, formatSalary, isClosed } from "@/lib/jobs/format";
 import type { IJob } from "@/types/jobTypes";
+import { authClient } from "@/lib/auth-client";
+import { SkeletonLoading } from "../SkeletonLoading";
+import { useRouter } from "next/navigation";
+import { ApplyToAJob } from "@/lib/actions/applications";
+import type { IApplication } from "@/types/applicationType";
 
 type InfoCardProps = {
     icon: LucideIcon;
@@ -62,11 +68,12 @@ const DetailRow = ({ label, value }: DetailRowProps) => {
 };
 
 const CompanyOverview = ({ job }: { job: IJob }) => {
+
     return (
         <Card className="h-fit gap-5 p-6">
             <h2 className="font-heading text-xl font-semibold tracking-tight">Company Overview</h2>
 
-            <div className="flex aspect-video items-center justify-center rounded-xl bg-gradient-to-br from-muted to-muted/40 text-4xl font-semibold text-muted-foreground">
+            <div className="flex aspect-video items-center justify-center rounded-xl bg-linear-to-br from-muted to-muted/40 text-4xl font-semibold text-muted-foreground">
                 {job.companyName.charAt(0).toUpperCase()}
             </div>
 
@@ -94,7 +101,45 @@ const CompanyOverview = ({ job }: { job: IJob }) => {
 export const JobDetails = ({ job }: { job: IJob }) => {
     const closed = isClosed(job.deadline);
     const salary = formatSalary(job);
+    const router = useRouter()
+    const { data: session, isPending } = authClient.useSession()
+    const user = session?.user
+    const handleApplyNow = async () => {
+        if (isPending) {
+            return <SkeletonLoading />
+        }
+        if (!user) {
+            router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
+            return
+        } else if(user.role==='seeker'){
+            // console.log('save the application to the database')
+            const jobId = job._id
+            if (jobId === undefined) return
 
+            const application: IApplication = {
+                jobId,
+                userId: user.id,
+                userEmail: user.email,
+                jobTitle: job.title,
+                companyName: job.companyName,
+                companyLogo: "",
+                location: job.location,
+                salary: job.salaryMin && job.salaryMax ? `$${job.salaryMin} - $${job.salaryMax} / ${job.salaryFrequency}` : "Not disclosed",
+                employmentType: capitalize(job.type),
+                status: "pending",
+                appliedAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }
+            const result = await ApplyToAJob(application)
+            console.log(result)
+            if (result.insertedId){
+               router.push('/browse-jobs') 
+            }
+
+        } else {
+            console.log('User is not a seeker')
+        }
+    }
     return (
         <div className="flex flex-col gap-6">
             <Card className="gap-6 p-6 sm:flex-row sm:items-start sm:justify-between">
@@ -136,7 +181,9 @@ export const JobDetails = ({ job }: { job: IJob }) => {
                     >
                         <Bookmark />
                     </Button>
-                    <Button type="button" className="h-12 px-7" disabled={closed}>
+                    <Button
+                        onClick={handleApplyNow}
+                        type="button" className="h-12 px-7" disabled={closed}>
                         {closed ? "Applications Closed" : "Apply Now"}
                     </Button>
                 </div>
