@@ -20,6 +20,7 @@ import { SkeletonLoading } from "../SkeletonLoading";
 import { useRouter } from "next/navigation";
 import { ApplyToAJob } from "@/lib/actions/applications";
 import type { IApplication } from "@/types/applicationType";
+import { getApplicationsCount } from "@/lib/api/applications";
 
 type InfoCardProps = {
     icon: LucideIcon;
@@ -111,29 +112,39 @@ export const JobDetails = ({ job }: { job: IJob }) => {
         if (!user) {
             router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
             return
-        } else if(user.role==='seeker'){
-            // console.log('save the application to the database')
-            const jobId = job._id
-            if (jobId === undefined) return
+        } else if (user.role === 'seeker') {
 
-            const application: IApplication = {
-                jobId,
-                userId: user.id,
-                userEmail: user.email,
-                jobTitle: job.title,
-                companyName: job.companyName,
-                companyLogo: "",
-                location: job.location,
-                salary: job.salaryMin && job.salaryMax ? `$${job.salaryMin} - $${job.salaryMax} / ${job.salaryFrequency}` : "Not disclosed",
-                employmentType: capitalize(job.type),
-                status: "pending",
-                appliedAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }
-            const result = await ApplyToAJob(application)
-            console.log(result)
-            if (result.insertedId){
-               router.push('/browse-jobs') 
+            // Number of jobs applied by this user
+
+            const countResult = await getApplicationsCount(`applicantId=${user.id}`)
+            // less more than 10 and not premium
+            if (countResult.count >= 5) {
+                // redirect to the payment page
+                router.push('/payment')
+                return
+            } else {
+                const jobId = job._id
+                if (jobId === undefined) return
+
+                const application: IApplication = {
+                    jobId,
+                    userId: user.id,
+                    userEmail: user.email,
+                    jobTitle: job.title,
+                    companyName: job.companyName,
+                    companyLogo: "",
+                    location: job.location,
+                    salary: job.salaryMin && job.salaryMax ? `$${job.salaryMin} - $${job.salaryMax} / ${job.salaryFrequency}` : "Not disclosed",
+                    employmentType: capitalize(job.type),
+                    status: "pending",
+                    appliedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                }
+                const result = await ApplyToAJob(application)
+                console.log(result)
+                if (result.insertedId) {
+                    router.push('/browse-jobs')
+                }
             }
 
         } else {
