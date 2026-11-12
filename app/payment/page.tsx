@@ -94,7 +94,14 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
     )
 }
 
-const PaymentPage = () => {
+const PaymentPage = async({ searchParams }: { searchParams: Promise < {canceled ?: string} >}) => {
+    const { canceled } = await searchParams
+
+    if (canceled) {
+        console.log(
+            'Order canceled -- continue to shop around and check out when you\'re ready.'
+        )
+    }
     return (
         <main className="min-h-svh bg-background dark:bg-neutral-950">
             <div className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-8 lg:py-12">
@@ -324,12 +331,19 @@ const PaymentPage = () => {
                         </label>
 
                         <div className="flex flex-col gap-3">
-                            <Button
-                                type="button"
-                                className="h-11 w-full rounded-lg bg-blue-600 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 hover:bg-blue-500 focus-visible:ring-blue-500/40"
-                            >
-                                Pay
-                            </Button>
+
+                            <form action="/api/checkout_sessions" method="POST">
+                                <section>
+                                    <Button
+                                        type="submit" role="link"
+                                        className="h-11 w-full rounded-lg bg-blue-600 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 hover:bg-blue-500 focus-visible:ring-blue-500/40"
+                                    >
+                                        Pay {plan.priceUsd}
+                                    </Button>
+                                </section>
+                            </form>
+
+
                             <p className="text-center text-xs text-muted-foreground">
                                 You will be redirected to Stripe to complete this payment
                                 securely.
