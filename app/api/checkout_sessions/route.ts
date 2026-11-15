@@ -7,6 +7,11 @@ import { getSession } from '@/lib/core/server';
 
 export async function POST() {
     const userSession = await getSession()
+
+    if (!userSession?.user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     try {
         const headersList = await headers()
         const origin = headersList.get('origin')
@@ -21,7 +26,10 @@ export async function POST() {
                 },
             ],
             mode: 'payment',
-            "customer_email": userSession?.user?.email,
+            "customer_email": userSession.user.email,
+            metadata: {
+                userId: userSession.user.id
+            },
             success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
             // Provide a name (for example, hosted_web_0001) to label this Checkout integration and measure its conversion independently
             integration_identifier: 'hireloop_web_001',
