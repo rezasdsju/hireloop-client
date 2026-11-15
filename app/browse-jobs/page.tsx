@@ -1,4 +1,5 @@
 import Navbar from "@/components/shared/navbar/Navbar";
+import { Footer } from "@/components/shared/Footer";
 import { Card } from "@/components/ui/card";
 import { JobCard } from "@/app/components/browse-jobs/JobCard";
 import { JobFilters } from "@/app/components/browse-jobs/JobFilters";
@@ -23,6 +24,8 @@ const BrowseJobsPage = async ({ searchParams }: { searchParams: Promise<SearchPa
     const requestedPage = Math.trunc(Number(getParam(params, "page"))) || 1;
     const page = Math.min(Math.max(requestedPage, 1), totalPages);
     const visibleJobs = jobs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const hrefForPage = (target: number) =>
+        `/browse-jobs?${toQueryString({ ...params, page: String(target) })}`;
 
     return (
         <div className="min-h-screen bg-background">
@@ -34,7 +37,7 @@ const BrowseJobsPage = async ({ searchParams }: { searchParams: Promise<SearchPa
                 <div className="mt-8 grid gap-6 md:grid-cols-[240px_minmax(0,1fr)]">
                     <JobFilters groups={filterGroups} />
 
-                    <section>
+                    <section className="min-w-0">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <h1 className="font-heading text-xl font-semibold tracking-tight">
                                 Found {formatCount(jobs.length)} Professional{" "}
@@ -58,10 +61,12 @@ const BrowseJobsPage = async ({ searchParams }: { searchParams: Promise<SearchPa
                             </Card>
                         )}
 
-                        <JobPagination page={page} totalPages={totalPages} />
+                        <JobPagination page={page} totalPages={totalPages} hrefForPage={hrefForPage} />
                     </section>
                 </div>
             </main>
+
+            <Footer />
         </div>
     );
 };

@@ -1,6 +1,3 @@
-"use client";
-
-import type { FormEvent } from "react";
 import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,18 +9,18 @@ type JobSearchBarProps = {
 };
 
 /**
- * Presentational search card. Submitting only prevents the native form submit;
- * read the form value and update the browse-jobs query when the search
- * behaviour is implemented.
+ * Plain GET form, so the search term ends up in the URL and the server component
+ * on the page can pass it on to the API.
  */
 export const JobSearchBar = ({ defaultValue = "" }: JobSearchBarProps) => {
-    const handleSearch = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-    };
-
     return (
         <Card className="p-6">
-            <form onSubmit={handleSearch} role="search" className="flex flex-col gap-3 sm:flex-row">
+            <form
+                action="/browse-jobs"
+                method="get"
+                role="search"
+                className="flex flex-col gap-3 sm:flex-row"
+            >
                 <div className="relative flex-1">
                     <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
