@@ -1,5 +1,7 @@
 import { createAuthClient } from "better-auth/react"
-import { adminClient, inferAdditionalFields } from "better-auth/client/plugins"
+// The admin client plugin is disabled because user roles are managed by the HireLoop API.
+// import { adminClient, inferAdditionalFields } from "better-auth/client/plugins"
+import { inferAdditionalFields } from "better-auth/client/plugins"
 import type { auth } from "./auth"
 
 export const authClient = createAuthClient({
@@ -7,6 +9,6 @@ export const authClient = createAuthClient({
     baseURL: process.env.BETTER_AUTH_URL,
     plugins: [
         inferAdditionalFields<typeof auth>(),
-        adminClient()
+        // adminClient()
     ],
 })
