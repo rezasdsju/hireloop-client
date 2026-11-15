@@ -1,4 +1,3 @@
-
 'use client'
 import {
     Sidebar,
@@ -10,10 +9,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
+    Home,
     LayoutDashboard,
     Briefcase,
     Bookmark,
@@ -22,8 +23,10 @@ import {
     Settings,
     Users,
     Building2,
+    UserRound,
 } from "lucide-react";
 import type { IUser } from "@/types/userTypes";
+import { USER_ROLE_META } from "@/lib/users/roles";
 import { SkeletonLoading } from "./SkeletonLoading";
 
 
@@ -67,17 +70,46 @@ const DashboardSideBar = () => {
     const { data: session, isPending } = authClient.useSession()
     const user = session?.user
     const role = user?.role as Role | undefined
-    // console.log({ isPending, user, role })
 
     if (isPending) {
         return <SkeletonLoading />
     }
     return (
         <Sidebar>
-            <SidebarHeader />
+            <SidebarHeader>
+                <div className="flex items-center gap-3 rounded-lg p-2">
+                    <Avatar size="lg">
+                        {user?.image ? (
+                            <AvatarImage src={user.image} alt={user.name} />
+                        ) : null}
+                        <AvatarFallback>
+                            <UserRound className="size-5" />
+                        </AvatarFallback>
+                    </Avatar>
+
+                    <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold">
+                            {user?.name ?? "Guest"}
+                        </p>
+                        <p className="truncate text-xs text-muted-foreground">
+                            {role ? USER_ROLE_META[role].label : "No role"}
+                        </p>
+                    </div>
+                </div>
+            </SidebarHeader>
+
             <SidebarContent>
-                <SidebarGroup />
-                <SidebarGroup />
+                <SidebarGroup>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton render={<Link href="/" />}>
+                                <Home />
+                                <span>Home</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroup>
+
                 <SidebarGroup>
                     <SidebarMenu>
                         {
