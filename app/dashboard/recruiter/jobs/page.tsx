@@ -15,6 +15,7 @@ import { StatusBadge } from "@/app/components/jobs/StatusBadge";
 import { TableHeadCell } from "@/app/components/jobs/TableHeadCell";
 import { capitalize, formatDeadline, isClosed } from "@/lib/jobs/format";
 import { JOB_CATEGORY_FILTERS, JOB_STATUS_FILTERS } from "@/lib/jobs/options";
+import { getSession } from "@/lib/core/server";
 
 const stats = [
     {
@@ -41,7 +42,8 @@ const stats = [
 ];
 
 const ManageJobsPage = async () => {
-    const jobs: IJob[] = await getJobs();
+    const session = await getSession()
+    const jobs: IJob[] = await getJobs(`recruiterId=${session?.user?.id}`);
 
     return (
         <div className="mx-auto w-full max-w-6xl px-6 py-6">
@@ -140,15 +142,23 @@ const ManageJobsPage = async () => {
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center justify-end gap-1">
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="icon-sm"
-                                            aria-label={`View ${job.title}`}
-                                            className="text-muted-foreground"
-                                        >
-                                            <Eye />
-                                        </Button>
+                                        {job._id && (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                nativeButton={false}
+                                                className="text-muted-foreground"
+                                                render={
+                                                    <Link
+                                                        href={`/dashboard/recruiter/jobs/${job._id}/applications`}
+                                                        aria-label={`View applications for ${job.title}`}
+                                                    />
+                                                }
+                                            >
+                                                <Eye />
+                                                View applications
+                                            </Button>
+                                        )}
                                         <DeleteJobDialog job={job} />
                                     </div>
                                 </TableCell>

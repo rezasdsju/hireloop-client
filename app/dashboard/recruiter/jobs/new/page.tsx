@@ -29,12 +29,16 @@ import { InputWithAdornment } from "@/app/components/jobs/InputWithAdornment";
 import { PageHeader } from "@/app/components/jobs/PageHeader";
 import { SectionHeading } from "@/app/components/jobs/SectionHeading";
 import { JOB_CATEGORIES, JOB_TYPES, SALARY_FREQUENCIES } from "@/lib/jobs/options";
+import { authClient } from "@/lib/auth-client";
 
 const NewJobPage = () => {
     const router = useRouter()
+    const {data:session, isPending} = authClient.useSession()
     const [form, setForm] = useState<IJob>({
         title: "",
         companyName: "",
+        companyId:"",
+        recruiterId: "",
         category: "Engineering & Tech",
         type: "full-time",
         isRemote: true,
@@ -46,6 +50,10 @@ const NewJobPage = () => {
         responsibilities: "",
         qualifications: "",
     });
+
+    if (isPending) {
+        return <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target
@@ -59,7 +67,11 @@ const NewJobPage = () => {
         e.preventDefault()
 
         try {
-            const result = await createJob(form)
+            // Read the recruiter from the live session so the id is always current.
+            const result = await createJob({
+                ...form,
+                recruiterId: session?.user?.id ?? "",
+            })
             if (result.acknowledged) {
                 toast.add({
                     type: 'success',

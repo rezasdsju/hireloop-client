@@ -1,6 +1,7 @@
 import type { IJob } from "@/types/jobTypes";
 import type { SearchParams } from "@/lib/search-params";
 import { toArray } from "@/lib/search-params";
+import { capitalize } from "@/lib/jobs/format";
 import { JOB_TYPES, JOB_WORK_MODES } from "@/lib/jobs/options";
 
 export type JobFilterOption = {
@@ -29,6 +30,14 @@ type FilterGroupConfig = {
 const uniqueCategories = (jobs: IJob[]) =>
     [...new Set(jobs.map((job) => job.category))].sort((a, b) => a.localeCompare(b));
 
+// Legacy records store slugs such as "engineering-tech"; newer records already
+// store the display label. Formatting keeps both readable in the sidebar.
+const formatCategoryLabel = (category: string) =>
+    category
+        .split("-")
+        .map((word) => (word.toLowerCase() === "it" ? "IT" : capitalize(word)))
+        .join(" ");
+
 const buildFilterConfigs = (jobs: IJob[]): FilterGroupConfig[] => [
     {
         title: "Job Type",
@@ -44,7 +53,7 @@ const buildFilterConfigs = (jobs: IJob[]): FilterGroupConfig[] => [
         name: "category",
         options: uniqueCategories(jobs).map((category) => ({
             value: category,
-            label: category,
+            label: formatCategoryLabel(category),
             matches: (job) => job.category === category,
         })),
     },

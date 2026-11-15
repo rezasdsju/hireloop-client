@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { IJob } from "@/types/jobTypes"
-import { deleteJob } from "@/lib/api/jobs"
+import { deleteJob } from "@/lib/actions/jobs"
 import { toast } from "@/components/ui/toast"
 import { useState } from "react"
 import { useRouter } from "next/navigation"

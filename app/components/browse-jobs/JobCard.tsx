@@ -35,14 +35,16 @@ const JobTag = ({ icon: Icon, tone = "default", children }: JobTagProps) => {
 };
 
 export const JobCard = ({ job }: { job: IJob }) => {
+    const companyName = job.companyName || "Company";
     const salary = formatSalary(job);
+    const location = formatLocation(job) || "Location not specified";
     const closed = isClosed(job.deadline);
 
     return (
         <Card className="p-6">
             <Link href={`/browse-jobs/${job._id}`} className="flex items-start gap-5">
                 <div className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-muted text-xl font-semibold">
-                    {job.companyName.charAt(0).toUpperCase()}
+                    {companyName.charAt(0).toUpperCase()}
                 </div>
 
                 <div className="flex min-w-0 flex-1 flex-col gap-4">
@@ -52,7 +54,7 @@ export const JobCard = ({ job }: { job: IJob }) => {
                                 {job.title}
                             </h3>
                             <p className="mt-1 text-sm text-muted-foreground">
-                                {job.companyName} • {formatLocation(job)}
+                                {companyName} • {location}
                             </p>
                         </div>
 
@@ -69,7 +71,7 @@ export const JobCard = ({ job }: { job: IJob }) => {
 
                     <div className="flex flex-wrap items-center gap-2">
                         {salary && <JobTag icon={DollarSign}>{salary}</JobTag>}
-                        <JobTag icon={Briefcase}>{capitalize(job.type)}</JobTag>
+                        <JobTag icon={Briefcase}>{job.type ? capitalize(job.type) : "Full-time"}</JobTag>
                         {closed && <JobTag tone="warning">Closed</JobTag>}
                     </div>
                 </div>

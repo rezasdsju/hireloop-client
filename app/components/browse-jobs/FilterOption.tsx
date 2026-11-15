@@ -1,14 +1,14 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatCount } from "@/lib/jobs/format";
 
 export type FilterOptionProps = {
     name: string;
     value: string;
     label: string;
     count: number;
-    checked: boolean;
-    onCheckedChange: (checked: boolean) => void;
+    defaultChecked?: boolean;
 };
 
 export const FilterOption = ({
@@ -16,24 +16,22 @@ export const FilterOption = ({
     value,
     label,
     count,
-    checked,
-    onCheckedChange,
+    defaultChecked,
 }: FilterOptionProps) => {
     const id = `${name}-${value}`;
 
     return (
         <div className="flex items-center gap-2.5">
-            <Checkbox
-                id={id}
-                name={name}
-                value={value}
-                checked={checked}
-                onCheckedChange={onCheckedChange}
-            />
-            <label htmlFor={id} className="flex-1 cursor-pointer text-sm text-muted-foreground">
+            <Checkbox id={id} name={name} value={value} defaultChecked={defaultChecked} />
+            <label
+                htmlFor={id}
+                className="flex-1 cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
                 {label}
             </label>
-            <span className="text-xs text-muted-foreground">{count}</span>
+            <span className="text-xs tabular-nums text-muted-foreground">
+                {formatCount(count)}
+            </span>
         </div>
     );
 };

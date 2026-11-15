@@ -8,6 +8,8 @@ export interface IJob {
     _id?: string,
     title: string;
     companyName: string;
+    companyId?:string,
+    recruiterId: string,
     category: string;
     type: JobType;
     isRemote: boolean;

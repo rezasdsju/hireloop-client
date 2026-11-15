@@ -31,13 +31,13 @@ const BrowseJobsPage = async ({ searchParams }: { searchParams: Promise<SearchPa
             <main className="mx-auto w-full max-w-7xl px-4 py-8">
                 <JobSearchBar defaultValue={getParam(params, "search")} />
 
-                <div className="mt-6 grid gap-8 lg:grid-cols-[296px_1fr]">
+                <div className="mt-8 grid gap-6 md:grid-cols-[240px_minmax(0,1fr)]">
                     <JobFilters groups={filterGroups} />
 
                     <section>
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <h1 className="font-heading text-xl font-semibold tracking-tight">
-                                Found {formatCount(jobs.length)}{" "}
+                                Found {formatCount(jobs.length)} Professional{" "}
                                 {jobs.length === 1 ? "Job" : "Jobs"}
                             </h1>
                             <JobSortSelect defaultValue={getParam(params, "sort")} />
