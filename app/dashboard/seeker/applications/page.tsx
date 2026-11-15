@@ -44,9 +44,10 @@ const ApplicationPage = async () => {
     const session = await auth.api.getSession({
         headers: await headers()
     })
-    console.log(session)
-    const applications: IApplication[] = await getApplications(`applicantId=${session?.user?.id}`);
-    console.log(applications)
+    const applicantId = session?.user?.id
+    const applications: IApplication[] = applicantId
+        ? await getApplications(`applicantId=${applicantId}`)
+        : []
     const totalApplications = applications.length;
     const activeApplications = applications.filter(
         (application) => application.status !== "accepted" && application.status !== "rejected"

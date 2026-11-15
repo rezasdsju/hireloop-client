@@ -16,11 +16,12 @@ import { Card } from "@/components/ui/card";
 import { capitalize, formatDeadline, formatLocation, formatSalary, isClosed } from "@/lib/jobs/format";
 import type { IJob } from "@/types/jobTypes";
 import { authClient } from "@/lib/auth-client";
-import { SkeletonLoading } from "../SkeletonLoading";
 import { useRouter } from "next/navigation";
 import { ApplyToAJob } from "@/lib/actions/applications";
 import type { IApplication } from "@/types/applicationType";
 import { getApplicationsCount } from "@/lib/api/applications";
+import { getUserPremiumById } from "@/lib/api/users";
+import { toast } from "@/components/ui/toast";
 
 type InfoCardProps = {
     icon: LucideIcon;
@@ -106,49 +107,51 @@ export const JobDetails = ({ job }: { job: IJob }) => {
     const { data: session, isPending } = authClient.useSession()
     const user = session?.user
     const handleApplyNow = async () => {
-        if (isPending) {
-            return <SkeletonLoading />
-        }
+        if (isPending) return
+
         if (!user) {
             router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
             return
-        } else if (user.role === 'seeker') {
+        }
 
-            // Number of jobs applied by this user
+        if (user.role !== "seeker") {
+            toast.add({
+                type: "error",
+                description: "Only job seekers can apply to jobs.",
+                priority: "high",
+            })
+            return
+        }
 
-            const countResult = await getApplicationsCount(`applicantId=${user.id}`)
-            // less more than 10 and not premium
-            if (countResult.count >= 5) {
-                // redirect to the payment page
-                router.push('/payment')
-                return
-            } else {
-                const jobId = job._id
-                if (jobId === undefined) return
+        const premiumResult = await getUserPremiumById(user.id)
+        // Free seekers can apply to 5 jobs before they need premium.
+        const countResult = await getApplicationsCount(`applicantId=${user.id}`)
+        if (!premiumResult?.premium && countResult.count >= 5) {
+            router.push("/payment")
+            return
+        }
 
-                const application: IApplication = {
-                    jobId,
-                    userId: user.id,
-                    userEmail: user.email,
-                    jobTitle: job.title,
-                    companyName: job.companyName,
-                    companyLogo: "",
-                    location: job.location,
-                    salary: job.salaryMin && job.salaryMax ? `$${job.salaryMin} - $${job.salaryMax} / ${job.salaryFrequency}` : "Not disclosed",
-                    employmentType: capitalize(job.type),
-                    status: "pending",
-                    appliedAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                }
-                const result = await ApplyToAJob(application)
-                console.log(result)
-                if (result.insertedId) {
-                    router.push('/browse-jobs')
-                }
-            }
+        const jobId = job._id
+        if (!jobId) return
 
-        } else {
-            console.log('User is not a seeker')
+        const application: IApplication = {
+            jobId,
+            userId: user.id,
+            userEmail: user.email,
+            jobTitle: job.title,
+            companyName: job.companyName,
+            companyLogo: "",
+            location: job.location,
+            salary: job.salaryMin && job.salaryMax ? `$${job.salaryMin} - $${job.salaryMax} / ${job.salaryFrequency}` : "Not disclosed",
+            employmentType: capitalize(job.type),
+            status: "pending",
+            appliedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+
+        const result = await ApplyToAJob(application)
+        if (result.insertedId) {
+            router.push("/browse-jobs")
         }
     }
     return (
