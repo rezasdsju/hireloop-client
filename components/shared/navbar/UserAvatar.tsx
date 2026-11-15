@@ -5,6 +5,7 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { BiChevronDown } from "react-icons/bi";
+import { UserRound } from "lucide-react";
 
 import {
   Tooltip,
@@ -28,14 +29,16 @@ export default function UserAvatar({ user,isOpen }: IUserAvatar) {
        
             <div className="flex items-center justify-center gap-2 rounded-3xl px-1 py-1 border border-border cursor-pointer">
               <Avatar>
-                {
-                  user.image ? <AvatarImage
+                {user.image ? (
+                  <AvatarImage
                     src={user.image}
                     alt={user.name}
                     className="grayscale"
-                  /> : <AvatarFallback>{user.name.charAt(0).toLocaleUpperCase()}</AvatarFallback>
-                }
-
+                  />
+                ) : null}
+                <AvatarFallback>
+                  <UserRound className="size-4" />
+                </AvatarFallback>
               </Avatar>
 
               {

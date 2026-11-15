@@ -2,11 +2,12 @@
 import Link from "next/link"
 import { FcGoogle } from "react-icons/fc"
 import { IoLogoGithub } from "react-icons/io5"
-import { Building2, Search, ShieldCheck } from "lucide-react"
+import { Building2, Search, UserRound } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import React, { useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "../ui/toast"
@@ -16,16 +17,44 @@ import { cn } from "@/lib/utils"
 const roles = [
     { value: "seeker", label: "Job Seeker", icon: Search },
     { value: "recruiter", label: "Recruiter", icon: Building2 },
-    { value: "admin", label: "Admin", icon: ShieldCheck },
 ] as const
 
 type Role = (typeof roles)[number]["value"]
+
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024
 
 
 const RegisterForm = () => {
     const [isRegistered, setIsRegistered] = useState(false)
     const [role, setRole] = useState<Role>("seeker")
+    const [image, setImage] = useState("")
     const router = useRouter()
+
+    // Read the selected file locally so it can be previewed before it is uploaded.
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+
+        if (!file) {
+            setImage("")
+            return
+        }
+
+        if (file.size > MAX_IMAGE_SIZE) {
+            toast.add({
+                type: 'error',
+                description: 'Please choose an image smaller than 2MB.',
+                priority: 'high'
+            })
+            e.target.value = ""
+            setImage("")
+            return
+        }
+
+        const reader = new FileReader()
+        reader.onload = () => setImage(String(reader.result ?? ""))
+        reader.readAsDataURL(file)
+    }
+
     const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsRegistered(true)
@@ -35,6 +64,7 @@ const RegisterForm = () => {
             name: userData.name as string,
             email: userData.email as string,
             password: userData.password as string,
+            image: image || undefined,
             role
         })
         if (error) {
@@ -88,7 +118,7 @@ const RegisterForm = () => {
             <form onSubmit={handleRegister} className="grid gap-4">
                 <fieldset className="grid gap-2">
                     <legend className="mb-2 text-sm font-medium">I am a</legend>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                         {roles.map(({ value, label, icon: Icon }) => (
                             <label
                                 key={value}
@@ -113,6 +143,32 @@ const RegisterForm = () => {
                         ))}
                     </div>
                 </fieldset>
+
+                <div className="flex items-center gap-4">
+                    <Avatar size="lg">
+                        {image ? (
+                            <AvatarImage src={image} alt="Selected profile photo" />
+                        ) : null}
+                        <AvatarFallback>
+                            <UserRound className="size-5" />
+                        </AvatarFallback>
+                    </Avatar>
+
+                    <div className="grid flex-1 gap-2">
+                        <Label htmlFor="image">Profile photo</Label>
+                        <Input
+                            id="image"
+                            name="image"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="h-10 cursor-pointer"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Optional. PNG or JPG, up to 2MB.
+                        </p>
+                    </div>
+                </div>
 
                 <div className="grid gap-2">
                     <Label htmlFor="name">Full name</Label>
