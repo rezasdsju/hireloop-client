@@ -20,7 +20,7 @@ import { useState } from "react"
 import useSignOut from "@/hooks/use-sign-out"
 
 const navLinks = [
-    { label: "Browse Jobs", href: "/jobs", icon: Briefcase },
+    { label: "Browse Jobs", href: "/browse-jobs", icon: Briefcase },
     { label: "Company", href: "/company", icon: Building2 },
     { label: "Pricing", href: "/pricing", icon: Tag },
 ]

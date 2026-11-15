@@ -144,7 +144,7 @@ export const ApplicationsTable = ({ applications }: ApplicationsTableProps) => {
                     }}
                 >
                     <SelectTrigger
-                        className="w-44"
+                        className="w-full sm:w-44"
                         aria-label="Filter applications by status"
                     >
                         <SelectValue>

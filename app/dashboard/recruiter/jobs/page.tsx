@@ -46,7 +46,7 @@ const ManageJobsPage = async () => {
     const jobs: IJob[] = await getJobs(`recruiterId=${session?.user?.id}`);
 
     return (
-        <div className="mx-auto w-full max-w-6xl px-6 py-6">
+        <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
             <PageHeader
                 title="Manage Jobs"
                 description="Oversee all active listings and historical job posts across the platform."
@@ -63,9 +63,9 @@ const ManageJobsPage = async () => {
             />
 
             <div className="mt-6 flex flex-wrap items-end gap-4">
-                <FormField label="Status">
+                <FormField label="Status" className="min-w-40 flex-1 sm:flex-none">
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-45">
+                        <SelectTrigger className="w-full sm:w-45">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -78,9 +78,9 @@ const ManageJobsPage = async () => {
                     </Select>
                 </FormField>
 
-                <FormField label="Category">
+                <FormField label="Category" className="min-w-40 flex-1 sm:flex-none">
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-45">
+                        <SelectTrigger className="w-full sm:w-45">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -93,11 +93,11 @@ const ManageJobsPage = async () => {
                     </Select>
                 </FormField>
 
-                <div className="flex items-center gap-2">
-                    <Button type="button" size="sm">
+                <div className="flex w-full items-center gap-2 sm:w-auto">
+                    <Button type="button" size="sm" className="flex-1 sm:flex-none">
                         Active (128)
                     </Button>
-                    <Button type="button" size="sm" variant="outline">
+                    <Button type="button" size="sm" variant="outline" className="flex-1 sm:flex-none">
                         Closed (45)
                     </Button>
                 </div>

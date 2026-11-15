@@ -16,11 +16,11 @@ type JobFiltersProps = {
  */
 export const JobFilters = ({ groups }: JobFiltersProps) => {
     return (
-        <aside className="h-fit md:sticky md:top-20">
+        <aside className="h-fit min-w-0 md:sticky md:top-20">
             <Card className="gap-5 p-5">
                 <h2 className="font-heading text-lg font-semibold tracking-tight">Filters</h2>
 
-                <div className="flex flex-col gap-6">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-6 md:flex md:flex-col md:gap-6">
                     {groups
                         .filter((group) => group.options.length > 0)
                         .map((group) => (

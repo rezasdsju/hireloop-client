@@ -154,14 +154,15 @@ const ApplicationPage = async () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex flex-wrap items-center gap-2">
                                         <Button
                                             variant="outline"
+                                            className="flex-1 sm:flex-none"
                                             render={<Link href={`/browse-jobs/${application.jobId}`} />}
                                         >
                                             View role
                                         </Button>
-                                        <Button variant="ghost">Withdraw</Button>
+                                        <Button variant="ghost" className="flex-1 sm:flex-none">Withdraw</Button>
                                     </div>
                                 </div>
 

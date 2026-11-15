@@ -41,19 +41,22 @@ export const JobCard = ({ job }: { job: IJob }) => {
     const closed = isClosed(job.deadline);
 
     return (
-        <Card className="p-6">
-            <Link href={`/browse-jobs/${job._id}`} className="flex items-start gap-5">
-                <div className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-muted text-xl font-semibold">
+        <Card className="p-4 sm:p-6">
+            <Link
+                href={`/browse-jobs/${job._id}`}
+                className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 sm:gap-5"
+            >
+                <div className="flex size-12 items-center justify-center rounded-lg bg-muted text-lg font-semibold sm:size-16 sm:text-xl">
                     {companyName.charAt(0).toUpperCase()}
                 </div>
 
-                <div className="flex min-w-0 flex-1 flex-col gap-4">
-                    <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
+                    <div className="flex items-start justify-between gap-2 sm:gap-4">
                         <div className="min-w-0">
-                            <h3 className="truncate font-heading text-xl font-semibold tracking-tight">
+                            <h3 className="truncate font-heading text-lg font-semibold tracking-tight sm:text-xl">
                                 {job.title}
                             </h3>
-                            <p className="mt-1 text-sm text-muted-foreground">
+                            <p className="mt-1 truncate text-sm text-muted-foreground">
                                 {companyName} • {location}
                             </p>
                         </div>

@@ -25,10 +25,10 @@ const Navbar = () => {
   const { data: session, isPending } = authClient.useSession()
   const user = session?.user
   return (
-    <header className="sticky -top-3 z-50 bg-background px-4 pt-3">
+    <header className="sticky -top-3 z-50 bg-background px-2 pt-3 sm:px-4">
       <nav
         aria-label="Main"
-        className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-8 rounded-2xl border border-border bg-card/95 px-5 shadow-sm backdrop-blur-md"
+        className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-3 shadow-sm backdrop-blur-md sm:gap-8 sm:px-5"
       >
         <Link href="/" className="flex shrink-0 items-center">
           <Image
@@ -37,11 +37,11 @@ const Navbar = () => {
             width={154}
             height={44}
             priority
-            className="h-9 w-auto"
+            className="h-8 w-auto sm:h-9"
           />
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-6">
           <ul className="hidden items-center gap-8 md:flex">
             {
               isPending ? <SkeletonForDashboardNavLink></SkeletonForDashboardNavLink> : user && (user?.role && user?.role === 'admin' ? <Link href={`/dashboard/admin`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer">Dashboard</Link> :
@@ -62,7 +62,7 @@ const Navbar = () => {
 
           <span className="hidden h-5 w-px bg-border md:block" />
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-1.5 sm:gap-5">
             <div>
               <ThemeToggle />
             </div>
@@ -70,7 +70,7 @@ const Navbar = () => {
               {
                 isPending ? <SkeletonAvatar /> :
                   user ?
-                    <div className="flex items-center  gap-8">
+                    <div className="flex items-center gap-2 sm:gap-8">
                       <span><ProfileMenu user={user} /></span>
                       <button
                         disabled={isSignedOut}

@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils"
 
 const navLinks = [
-  { label: "Browse Jobs", href: "/jobs", icon: Briefcase },
+  { label: "Browse Jobs", href: "/browse-jobs", icon: Briefcase },
   { label: "Company", href: "/company", icon: Building2 },
   { label: "Pricing", href: "/pricing", icon: Tag },
 ]

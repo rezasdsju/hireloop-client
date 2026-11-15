@@ -156,14 +156,14 @@ export const JobDetails = ({ job }: { job: IJob }) => {
     }
     return (
         <div className="flex flex-col gap-6">
-            <Card className="gap-6 p-6 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex items-start gap-5">
-                    <div className="flex size-20 shrink-0 items-center justify-center rounded-xl bg-muted text-2xl font-semibold">
+            <Card className="gap-6 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-6">
+                <div className="flex items-start gap-3 sm:gap-5">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-muted text-xl font-semibold sm:size-20 sm:text-2xl">
                         {job.companyName.charAt(0).toUpperCase()}
                     </div>
 
                     <div className="min-w-0">
-                        <h1 className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
+                        <h1 className="font-heading text-xl font-semibold tracking-tight text-balance sm:text-3xl">
                             {job.title}
                         </h1>
                         <div className="mt-2 flex flex-wrap items-center gap-2.5">
@@ -185,19 +185,19 @@ export const JobDetails = ({ job }: { job: IJob }) => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex w-full items-center gap-3 sm:w-auto">
                     <Button
                         type="button"
                         variant="secondary"
                         size="icon"
                         aria-label={`Save ${job.title}`}
-                        className="size-12 rounded-lg"
+                        className="size-12 shrink-0 rounded-lg"
                     >
                         <Bookmark />
                     </Button>
                     <Button
                         onClick={handleApplyNow}
-                        type="button" className="h-12 px-7" disabled={closed}>
+                        type="button" className="h-12 flex-1 px-7 sm:flex-none" disabled={closed}>
                         {closed ? "Applications Closed" : "Apply Now"}
                     </Button>
                 </div>
