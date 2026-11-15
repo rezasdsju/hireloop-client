@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "../ui/toast"
 import { useRouter } from "next/navigation"
@@ -28,14 +28,28 @@ const RegisterForm = () => {
     const [isRegistered, setIsRegistered] = useState(false)
     const [role, setRole] = useState<Role>("seeker")
     const [image, setImage] = useState("")
+    const [isUploading, setIsUploading] = useState(false)
+    const uploadIdRef = useRef(0)
     const router = useRouter()
 
+    const [values, setValues] = useState({
+        email: "",
+        password: "",
+        name: "",
+        role: '',
+        image: ""
+    })
     // Read the selected file locally so it can be previewed before it is uploaded.
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
+
+        // Every change starts a new upload, so any older response must be ignored.
+        const uploadId = uploadIdRef.current + 1
+        uploadIdRef.current = uploadId
 
         if (!file) {
             setImage("")
+            setValues((prev) => ({ ...prev, image: "" }))
             return
         }
 
@@ -47,12 +61,48 @@ const RegisterForm = () => {
             })
             e.target.value = ""
             setImage("")
+            setValues((prev) => ({ ...prev, image: "" }))
             return
         }
+        const formData = new FormData()
+        formData.append('image', file)
 
+        // Show the local preview right away, before the upload finishes.
         const reader = new FileReader()
         reader.onload = () => setImage(String(reader.result ?? ""))
         reader.readAsDataURL(file)
+
+        const imageBBApi = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMAGEBB_API_KEY}`
+        setIsUploading(true)
+        try {
+            const res = await fetch(imageBBApi, {
+                method: 'POST',
+                body: formData
+            })
+            const result = await res.json()
+
+            if (!result?.data?.url) {
+                throw new Error(result?.error?.message ?? 'Image upload failed')
+            }
+
+            // A newer file was picked while this upload was running.
+            if (uploadId !== uploadIdRef.current) return
+
+            setValues((prev) => ({ ...prev, image: result.data.url }))
+        } catch {
+            if (uploadId !== uploadIdRef.current) return
+
+            toast.add({
+                type: 'error',
+                description: 'Could not upload the image. Please try again.',
+                priority: 'high'
+            })
+            e.target.value = ""
+            setImage("")
+            setValues((prev) => ({ ...prev, image: "" }))
+        } finally {
+            if (uploadId === uploadIdRef.current) setIsUploading(false)
+        }
     }
 
     const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -64,8 +114,8 @@ const RegisterForm = () => {
             name: userData.name as string,
             email: userData.email as string,
             password: userData.password as string,
-            image: image || undefined,
-            role
+            image: values.image || undefined,
+            role,
         })
         if (error) {
             toast.add({
@@ -83,7 +133,7 @@ const RegisterForm = () => {
                 priority: 'high'
             })
             setIsRegistered(true)
-            setTimeout(()=>router.replace('/'),1500)
+            setTimeout(() => router.replace('/'), 1500)
         }
 
     }
@@ -210,11 +260,11 @@ const RegisterForm = () => {
                 </div>
 
                 <Button
-                    disabled={isRegistered}
+                    disabled={isRegistered || isUploading}
                     type="submit"
                     className="h-10 w-full bg-indigo-600 text-white hover:bg-indigo-500"
                 >
-                    Create account
+                    {isUploading ? "Uploading photo..." : "Create account"}
                 </Button>
             </form>
 
